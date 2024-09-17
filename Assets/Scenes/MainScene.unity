@@ -1171,7 +1171,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodeSpacing: 1
-  offset: {x: -3, y: -4}
   nodes: []
   goalNodes: []
 --- !u!1 &838990524
@@ -1827,7 +1826,6 @@ MonoBehaviour:
   ballMovement: {fileID: 1648049774}
   turnManager: {fileID: 1648049775}
   targetPosition: {x: 0, y: 0, z: 0}
-  newTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &1648049777
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -70,18 +70,19 @@ public class GameController : MonoBehaviour
         //    return;
         //}
 
-        if (isPlayerTurn)
-        {
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                EndTurn();
-            }
-        }
-        else
-        {
-            aiController.PerformAITurn();
-            EndTurn();
-        }
+        //if (isPlayerTurn)
+        //{
+        //    if (Input.GetButtonDown("Submit"))
+        //    {
+        //        Debug.Log("Dzia³a Enter");
+        //        EndTurn();
+        //    }
+        //}
+        //else
+        //{
+        // //   aiController.PerformAITurn();
+        //    EndTurn();
+        //}
     }
 
     public void StartGame()

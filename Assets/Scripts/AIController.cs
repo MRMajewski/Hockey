@@ -8,9 +8,6 @@ public class AIController : MonoBehaviour
     [SerializeField]
     private Vector3 targetPosition;
 
-    [SerializeField]
-    private Vector3 newTargetPosition;
-
     private void Start()
     {
         SetTargetPositionForAI();
@@ -18,20 +15,24 @@ public class AIController : MonoBehaviour
 
     public void ResetAI()
     {
-        newTargetPosition = Vector3.zero;
+        ballMovement.ball.transform.position = Vector3.zero;
+        SetTargetPositionForAI();
     }
 
     public void PerformAITurn()
     {
+        // Oblicz kierunek do celu
         Vector3 direction = (targetPosition - ballMovement.ball.transform.position).normalized;
-        newTargetPosition = ballMovement.ball.transform.position + direction * ballMovement.gridSize;
-
+        // Oblicz now¹ pozycjê
+        Vector3 newTargetPosition = ballMovement.ball.transform.position + direction * ballMovement.gridSize;
+        // Zaokr¹glij do najbli¿szego pola siatki
         newTargetPosition = new Vector3(
             Mathf.Round(newTargetPosition.x / ballMovement.gridSize) * ballMovement.gridSize,
             Mathf.Round(newTargetPosition.y / ballMovement.gridSize) * ballMovement.gridSize,
             ballMovement.ball.transform.position.z
         );
 
+        // SprawdŸ, czy nowa pozycja jest w obrêbie areny
         if (ballMovement.IsWithinArena(newTargetPosition))
         {
             turnManager.pathRenderer.AddPosition(ballMovement.ball.transform.position, newTargetPosition, Color.red);
@@ -49,9 +50,11 @@ public class AIController : MonoBehaviour
 
     public void SetTargetPositionForAI()
     {
+        // Oblicz pozycjê celu na podstawie bramki przeciwnika
         float arenaBottom = -ballMovement.arenaSize.y / 2f * ballMovement.gridSize;
         targetPosition = new Vector3(0, arenaBottom, ballMovement.ball.transform.position.z);
 
+        // Ustaw pi³kê na œrodku areny
         ballMovement.ball.transform.position = Vector3.zero;
     }
 }

@@ -25,6 +25,21 @@ public class Node
             Neighbors.Add(neighborId);
         }
     }
+
+    // Metoda do usuwania s¹siada
+    // Metoda do usuwania s¹siada na podstawie indeksu
+    public void RemoveNeighbor(int neighborIndex)
+    {
+        if (Neighbors.Contains(neighborIndex))
+        {
+            Neighbors.Remove(neighborIndex);
+        }
+    }
+
+    public List<int> GetNeighbors()
+    {
+        return Neighbors;
+    }
 }
 
 public class GridManager : MonoBehaviour
@@ -144,6 +159,34 @@ public class GridManager : MonoBehaviour
                 RemoveEdgeNeighbors(currentNode, n => Mathf.Approximately(n.Position.y, currentNode.Position.y));
             }
         }
+    }
+
+    internal List<Node> GetNeighbors(Node currentNode)
+    {
+        List<Node> neighbourNodesList = new List<Node>();
+        List<int> neighborsIndexes = currentNode.GetNeighbors();
+
+        foreach (var index in neighborsIndexes)
+        {
+            neighbourNodesList.Add(nodes[index]);
+        }
+
+        return neighbourNodesList;
+    }
+    public int GetNodeIndex(Node node)
+    {
+        return nodes.IndexOf(node);  // Zwraca indeks node'a w liœcie nodes
+    }
+    internal Node GetNodeAtPosition(Vector3 position)
+    {
+        foreach (var node in nodes)
+        {
+            if (Vector3.Distance(position, new Vector3(node.Position.x, node.Position.y, position.z)) < nodeSpacing * 0.5f)
+            {
+                return node;
+            }
+        }
+        return null;
     }
 
     private void RemoveEdgeNeighbors(Node node, Predicate<Node> condition)
