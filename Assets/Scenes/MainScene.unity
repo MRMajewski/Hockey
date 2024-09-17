@@ -1111,6 +1111,7 @@ GameObject:
   m_Component:
   - component: {fileID: 837017962}
   - component: {fileID: 837017961}
+  - component: {fileID: 837017963}
   m_Layer: 0
   m_Name: GameArena
   m_TagString: Untagged
@@ -1138,6 +1139,7 @@ MonoBehaviour:
   offset: {x: 0.5, y: 0.5}
   goalPrefab: {fileID: 3898403266299788273, guid: f1ef6e904282db849befc142132a8d41, type: 3}
   goalWidth: 2
+  gridManager: {fileID: 837017963}
 --- !u!4 &837017962
 Transform:
   m_ObjectHideFlags: 0
@@ -1156,6 +1158,22 @@ Transform:
   - {fileID: 771976389}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &837017963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837017960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc10e20d905e60e45883b4b8056b0c97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodeSpacing: 1
+  offset: {x: -3, y: -4}
+  nodes: []
+  goalNodes: []
 --- !u!1 &838990524
 GameObject:
   m_ObjectHideFlags: 0
@@ -1771,6 +1789,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameController: {fileID: 1648049778}
+  gridManager: {fileID: 837017963}
   ball: {fileID: 771976388}
   gridSize: 1
   arenaSize: {x: 8, y: 10}
@@ -1844,6 +1863,7 @@ MonoBehaviour:
   aiController: {fileID: 1648049776}
   gameEnded: 0
   isGameStarted: 0
+  gridManager: {fileID: 837017963}
 --- !u!1 &1652943334
 GameObject:
   m_ObjectHideFlags: 0
@@ -2070,7 +2090,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1944550973}
   m_Layer: 0
-  m_Name: PlayerPathRendere
+  m_Name: PlayerPathRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

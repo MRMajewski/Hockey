@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class GameController : MonoBehaviour
 {
@@ -31,37 +32,43 @@ public class GameController : MonoBehaviour
     private const string PlayerScoreKey = "PlayerScore";
     private const string AiScoreKey = "AiScore";
 
+    [SerializeField]
+    private GridManager gridManager;
+
     private void Start()
     {
         isGameStarted = false;
         LoadScores();
         UpdateScoreUI();
     }
-
+    public List<Node> GetAllNodes()
+    {
+        return gridManager.GetAllNodes(); // Zak³adaj¹c, ¿e GridManager jest przypisany w GameController
+    }
     private void Update()
     {
         if (!isGameStarted || gameEnded)
             return;
 
-        if (CheckForWin())
-        {
-            if (isPlayerTurn)
-            {
-                playerScore++;
-                infoText.text = "Player wins!";
-                Debug.Log("Player wins!");
-            }
-            else
-            {
-                aiScore++;
-                infoText.text = "AI wins!";
-                Debug.Log("AI wins!");
-            }
-            SaveScores();
-            gameEnded = true;
-            isGameStarted = false;
-            return;
-        }
+        //if (CheckForWin())
+        //{
+        //    if (isPlayerTurn)
+        //    {
+        //        playerScore++;
+        //        infoText.text = "Player wins!";
+        //        Debug.Log("Player wins!");
+        //    }
+        //    else
+        //    {
+        //        aiScore++;
+        //        infoText.text = "AI wins!";
+        //        Debug.Log("AI wins!");
+        //    }
+        //    SaveScores();
+        //    gameEnded = true;
+        //    isGameStarted = false;
+        //    return;
+        //}
 
         if (isPlayerTurn)
         {

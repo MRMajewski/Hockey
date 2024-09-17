@@ -15,6 +15,9 @@ public class ArenaGenerator : MonoBehaviour
     public GameObject goalPrefab;
     public float goalWidth = 2.0f;
 
+    [SerializeField]
+    private GridManager gridManager;
+
     private void OnValidate()
     {
         if (width % 2 != 0)
@@ -47,6 +50,8 @@ public class ArenaGenerator : MonoBehaviour
         }
 
         AddGoals();
+
+        gridManager.GenerateNodes(width, height);
     }
 
     void AddGoals()
