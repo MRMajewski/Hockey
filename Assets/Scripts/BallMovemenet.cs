@@ -103,7 +103,22 @@ public class BallMovement : MonoBehaviour
         {
             SetTargetPosition(Vector3.right);
         }
-
+        else if (Input.GetKeyDown(KeyCode.Q)) // Ruch po skosie w lewo-górê
+        {
+            SetTargetPosition(new Vector3(-1, 1, 0));
+        }
+        else if (Input.GetKeyDown(KeyCode.E)) // Ruch po skosie w prawo-górê
+        {
+            SetTargetPosition(new Vector3(1, 1, 0));
+        }
+        else if (Input.GetKeyDown(KeyCode.Z)) // Ruch po skosie w lewo-dó³
+        {
+            SetTargetPosition(new Vector3(-1, -1, 0));
+        }
+        else if (Input.GetKeyDown(KeyCode.C)) // Ruch po skosie w prawo-dó³
+        {
+            SetTargetPosition(new Vector3(1, -1, 0));
+        }
         if (isMoving)
         {
             MoveBall();
@@ -140,9 +155,12 @@ public class BallMovement : MonoBehaviour
 
         if (currentNode != null)
         {
-            List<int> neighborsIndexes = currentNode.GetNeighbors();
+            //    List<int> neighborsIndexes = currentNode.GetNeighbors();
 
-            List<Node> neighbors = gridManager.GetNeighbors(currentNode);
+            //   List<Node> neighbors = gridManager.GetNeighbors(currentNode);
+
+            List<Node> neighbors= currentNode.GetNeighbors();
+
 
             foreach (var neighbor in neighbors)
             {
@@ -154,6 +172,8 @@ public class BallMovement : MonoBehaviour
         }
         return false;
     }
+
+
     //private bool IsNeighborNode(Vector3 targetPosition)
     //{
     //    Vector3 currentNodePosition = GetClosestNodePosition(ball.transform.position);
@@ -174,7 +194,24 @@ public class BallMovement : MonoBehaviour
 
     //    return false;
     //}
+    public Node GetNodeAtPosition(Vector3 position)
+    {
+        Node closestNode = null;
+        float closestDistance = Mathf.Infinity;
 
+        // Za³ó¿my, ¿e masz metodê w GridManager, która zwraca wszystkie wêz³y
+        foreach (Node node in gridManager.GetAllNodes())
+        {
+            float distance = Vector3.Distance(position, (Vector3)node.Position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestNode = node;
+            }
+        }
+
+        return closestNode;
+    }
     private bool IsGoalPosition(Vector3 position)
     {
         foreach (var goalNode in gridManager.GetGoalNodes())
@@ -232,13 +269,12 @@ public class BallMovement : MonoBehaviour
     }
     public void RemoveNeighborConnection(Node nodeA, Node nodeB)
     {
-        int indexA = gridManager.GetNodeIndex(nodeA);
-        int indexB = gridManager.GetNodeIndex(nodeB);
+      //  int indexA = gridManager.GetNodeIndex(nodeA);
+      //  int indexB = gridManager.GetNodeIndex(nodeB);
 
-        nodeA.RemoveNeighbor(indexB);
-        nodeB.RemoveNeighbor(indexA);
+        nodeA.RemoveNeighbor(nodeB);
+        nodeB.RemoveNeighbor(nodeA);
     }
-
     public bool IsWithinArena(Vector3 position)
     {
         float arenaLeft = -arenaSize.x / 2f * gridSize;

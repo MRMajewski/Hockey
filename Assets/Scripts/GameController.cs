@@ -70,6 +70,8 @@ public class GameController : MonoBehaviour
         //    return;
         //}
 
+
+
         //if (isPlayerTurn)
         //{
         //    if (Input.GetButtonDown("Submit"))
@@ -80,7 +82,7 @@ public class GameController : MonoBehaviour
         //}
         //else
         //{
-        // //   aiController.PerformAITurn();
+        //    aiController.PerformAITurn();
         //    EndTurn();
         //}
     }

@@ -38,9 +38,14 @@ public class TurnManager : MonoBehaviour
             //    isMoving = true;
             //}
             if (ballMovement.IsNeighborNode(lastPosition))
-              //  if (ballMovement.IsNeighborNode(currentPosition))
+            //  if (ballMovement.IsNeighborNode(currentPosition))
             {
-             //   ballMovement.RemoveNeighborConnection(previousNode, currentNode);
+                Node previousNode = ballMovement.GetNodeAtPosition(lastPosition);
+                Node currentNode = ballMovement.GetNodeAtPosition(currentPosition);
+
+
+
+               ballMovement.RemoveNeighborConnection(previousNode, currentNode);
                 pathRenderer.AddPosition(lastPosition, currentPosition, playerColor);
                 lastPosition = currentPosition;
            //     isPlayerTurn = false;

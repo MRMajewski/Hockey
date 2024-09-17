@@ -7,7 +7,7 @@ public class Node
 {
     public Vector2 Position;
     public bool IsOccupied;
-    public List<int> Neighbors;
+    public List<Node> Neighbors; // Zmieniamy List<int> na List<Node>
     public bool IsGoalNode;
 
     public Node(Vector2 position, bool isGoal = false)
@@ -15,28 +15,33 @@ public class Node
         Position = position;
         IsOccupied = false;
         IsGoalNode = isGoal;
-        Neighbors = new List<int>();
+        Neighbors = new List<Node>();
     }
 
-    public void AddNeighbor(int neighborId)
+    // Sprawdzanie, czy dany wêze³ jest s¹siadem
+    public bool IsNeighbor(Node node)
     {
-        if (!Neighbors.Contains(neighborId))
+        return Neighbors.Contains(node); // Sprawdza, czy podany wêze³ jest na liœcie s¹siadów
+    }
+
+    public void AddNeighbor(Node neighbor)
+    {
+        if (!Neighbors.Contains(neighbor))
         {
-            Neighbors.Add(neighborId);
+            Neighbors.Add(neighbor);
         }
     }
 
     // Metoda do usuwania s¹siada
-    // Metoda do usuwania s¹siada na podstawie indeksu
-    public void RemoveNeighbor(int neighborIndex)
+    public void RemoveNeighbor(Node neighbor)
     {
-        if (Neighbors.Contains(neighborIndex))
+        if (Neighbors.Contains(neighbor))
         {
-            Neighbors.Remove(neighborIndex);
+            Neighbors.Remove(neighbor);
         }
     }
 
-    public List<int> GetNeighbors()
+    public List<Node> GetNeighbors()
     {
         return Neighbors;
     }
@@ -99,7 +104,7 @@ public class GridManager : MonoBehaviour
 
                 if (distance.magnitude <= nodeSpacing * Mathf.Sqrt(2) + 0.1f)
                 {
-                    currentNode.AddNeighbor(j);
+                    currentNode.AddNeighbor(neighborNode);
                 }
             }
         }
@@ -115,8 +120,8 @@ public class GridManager : MonoBehaviour
 
                 if (distance.magnitude <= nodeSpacing * Mathf.Sqrt(2) + 0.1f)
                 {
-                    goalNode.AddNeighbor(i);
-                    currentNode.AddNeighbor(nodes.IndexOf(goalNode));
+                    goalNode.AddNeighbor(nodes[i]);
+                    currentNode.AddNeighbor(goalNode);
                 }
             }
         }
@@ -130,9 +135,9 @@ public class GridManager : MonoBehaviour
         {
             Node currentNode = nodes[i];
 
-            foreach (int neighborIndex in currentNode.Neighbors)
+            foreach (Node neighborIndex in currentNode.Neighbors)
             {
-                Node neighborNode = nodes[neighborIndex];
+                Node neighborNode = neighborIndex;
                 Debug.DrawLine(currentNode.Position, neighborNode.Position, Color.red, 100f);
             }
         }
@@ -164,11 +169,11 @@ public class GridManager : MonoBehaviour
     internal List<Node> GetNeighbors(Node currentNode)
     {
         List<Node> neighbourNodesList = new List<Node>();
-        List<int> neighborsIndexes = currentNode.GetNeighbors();
+       // List<int> neighborsIndexes = currentNode.GetNeighbors();
 
-        foreach (var index in neighborsIndexes)
+        foreach (var node in neighbourNodesList)
         {
-            neighbourNodesList.Add(nodes[index]);
+            neighbourNodesList.Add(node);
         }
 
         return neighbourNodesList;
@@ -193,8 +198,9 @@ public class GridManager : MonoBehaviour
     {
         for (int j = node.Neighbors.Count - 1; j >= 0; j--)
         {
-            int neighborIndex = node.Neighbors[j];
-            Node neighborNode = nodes[neighborIndex];
+            //  int neighborIndex = node.Neighbors[j];
+            //    Node neighborNode = nodes[neighborIndex];
+            Node neighborNode = node.Neighbors[j];
 
             if (condition(neighborNode))
             {
