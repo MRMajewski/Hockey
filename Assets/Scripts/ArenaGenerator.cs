@@ -24,8 +24,10 @@ public class ArenaGenerator : MonoBehaviour
         {
             width = Mathf.Max(2, width - 1);
         }
-
-        height = Mathf.Max(2, height);
+        if (height % 2 != 0)
+        {
+            height = Mathf.Max(2, height - 1);
+        }
     }
 
     public void GenerateArena()

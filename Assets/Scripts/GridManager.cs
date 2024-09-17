@@ -28,7 +28,7 @@ public class Node
 public class GridManager : MonoBehaviour
 {
     public float nodeSpacing = 1f;
-    public Vector2 offset = new Vector2(0.5f, 0.5f);
+    public Vector2 offset;
     [SerializeField]
     private List<Node> nodes = new List<Node>();
     [SerializeField]
@@ -36,6 +36,7 @@ public class GridManager : MonoBehaviour
 
     public void GenerateNodes(int gridWidth, int gridHeight, int goalWidth = 2)
     {
+        offset = new Vector2(gridWidth / -2f, gridHeight / -2f);
         nodes.Clear();
         goalNodes.Clear();
         int totalNodes = (gridWidth + 1) * (gridHeight + 1);
@@ -124,31 +125,82 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-
     private void ModifyAdjacencyForEdgeNodes(int gridWidth, int gridHeight)
     {
+        float edgeX = offset.x;
+        float edgeXMax = gridWidth * nodeSpacing + offset.x;
+        float edgeY = offset.y;
+        float edgeYMax = gridHeight * nodeSpacing + offset.y;
+
         for (int i = 0; i < nodes.Count; i++)
         {
             Node currentNode = nodes[i];
             Vector2 currentPosition = currentNode.Position;
 
-            // Sprawdzamy, czy wêze³ jest na krawêdzi siatki
-            if (currentPosition.x == 0 || currentPosition.x == gridWidth * nodeSpacing + offset.x)
+            // Sprawdzamy, czy wêze³ jest na lewej krawêdzi siatki
+            if (Mathf.Approximately(currentPosition.x, edgeX))
+            {
+                // Usuñ powi¹zania z s¹siadami w osi X
+                for (int j = currentNode.Neighbors.Count - 1; j >= 0; j--)
+                {
+                    int neighborIndex = currentNode.Neighbors[j];
+                    Node neighborNode = nodes[neighborIndex];
+                    if (Mathf.Approximately(neighborNode.Position.x, edgeX))
+                    {
+                        // Usuñ po³¹czenie, jeœli s¹siad jest równie¿ na lewej krawêdzi
+                        currentNode.Neighbors.RemoveAt(j);
+                    }
+                }
+            }
+            // Sprawdzamy, czy wêze³ jest na prawej krawêdzi siatki
+            else if (Mathf.Approximately(currentPosition.x, edgeXMax))
+            {
+                // Usuñ powi¹zania z s¹siadami w osi X
+                for (int j = currentNode.Neighbors.Count - 1; j >= 0; j--)
+                {
+                    int neighborIndex = currentNode.Neighbors[j];
+                    Node neighborNode = nodes[neighborIndex];
+                    if (Mathf.Approximately(neighborNode.Position.x, edgeXMax))
+                    {
+                        // Usuñ po³¹czenie, jeœli s¹siad jest równie¿ na prawej krawêdzi
+                        currentNode.Neighbors.RemoveAt(j);
+                    }
+                }
+            }
+
+            // Sprawdzamy, czy wêze³ jest na górnej krawêdzi siatki
+            if (Mathf.Approximately(currentPosition.y, edgeY))
             {
                 // Usuñ powi¹zania z s¹siadami w osi Y
-                for (int j = 0; j < nodes.Count; j++)
+                for (int j = currentNode.Neighbors.Count - 1; j >= 0; j--)
                 {
-                    Node neighborNode = nodes[j];
-                    if (Mathf.Abs(neighborNode.Position.y - currentPosition.y) <= nodeSpacing &&
-                        Mathf.Abs(neighborNode.Position.x - currentPosition.x) <= 0.1f)
+                    int neighborIndex = currentNode.Neighbors[j];
+                    Node neighborNode = nodes[neighborIndex];
+                    if (Mathf.Approximately(neighborNode.Position.y, edgeY))
                     {
-                        // Usuniêcie po³¹czenia
-                        currentNode.Neighbors.Remove(j);
+                        // Usuñ po³¹czenie, jeœli s¹siad jest równie¿ na górnej krawêdzi
+                        currentNode.Neighbors.RemoveAt(j);
+                    }
+                }
+            }
+            // Sprawdzamy, czy wêze³ jest na dolnej krawêdzi siatki
+            else if (Mathf.Approximately(currentPosition.y, edgeYMax))
+            {
+                // Usuñ powi¹zania z s¹siadami w osi Y
+                for (int j = currentNode.Neighbors.Count - 1; j >= 0; j--)
+                {
+                    int neighborIndex = currentNode.Neighbors[j];
+                    Node neighborNode = nodes[neighborIndex];
+                    if (Mathf.Approximately(neighborNode.Position.y, edgeYMax))
+                    {
+                        // Usuñ po³¹czenie, jeœli s¹siad jest równie¿ na dolnej krawêdzi
+                        currentNode.Neighbors.RemoveAt(j);
                     }
                 }
             }
         }
     }
+
 
     void OnDrawGizmos()
     {
