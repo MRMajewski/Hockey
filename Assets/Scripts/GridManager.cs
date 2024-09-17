@@ -7,18 +7,21 @@ public class Node
 {
     public Vector2 Position;
     public bool IsOccupied;
-    public int[,] adjacencyMatrix;
+    public List<int> Neighbors; // Lista s¹siadów
 
-    public Node(Vector2 position, int totalNodes)
+    public Node(Vector2 position)
     {
         Position = position;
         IsOccupied = false;
-        adjacencyMatrix = new int[totalNodes, totalNodes];
+        Neighbors = new List<int>();
     }
 
     public void AddNeighbor(int neighborId)
     {
-        adjacencyMatrix[neighborId, neighborId] = 1;
+        if (!Neighbors.Contains(neighborId))
+        {
+            Neighbors.Add(neighborId);
+        }
     }
 }
 
@@ -43,10 +46,11 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y <= gridHeight; y++)
             {
                 Vector2 position = new Vector2(x * nodeSpacing + offset.x, y * nodeSpacing + offset.y);
-                Node newNode = new Node(position, totalNodes);
+                Node newNode = new Node(position);
                 nodes.Add(newNode);
-                Debug.DrawLine(position - Vector2.right * 0.5f, position + Vector2.right * 0.5f, Color.red, 100f);
-                Debug.DrawLine(position - Vector2.up * 0.5f, position + Vector2.up * 0.5f, Color.red, 100f);
+                // Opcjonalnie rysowanie wêz³ów
+                // Debug.DrawLine(position - Vector2.right * 0.5f, position + Vector2.right * 0.5f, Color.red, 100f);
+                // Debug.DrawLine(position - Vector2.up * 0.5f, position + Vector2.up * 0.5f, Color.red, 100f);
             }
         }
 
@@ -56,13 +60,8 @@ public class GridManager : MonoBehaviour
         Vector2 topGoalCenter = new Vector2(halfGridWidth * nodeSpacing + offset.x, nodeSpacing - offset.y);
         Vector2 bottomGoalCenter = new Vector2(halfGridWidth * nodeSpacing + offset.x, -nodeSpacing + offset.y);
 
-        goalNodes.Add(new Node(topGoalCenter, totalNodes));
-        goalNodes.Add(new Node(bottomGoalCenter, totalNodes));
-
-        Debug.DrawLine(topGoalCenter - Vector2.right * 1f, topGoalCenter + Vector2.right * 1f, Color.red, 100f);
-        Debug.DrawLine(topGoalCenter - Vector2.up * 1f, topGoalCenter + Vector2.up * 1f, Color.red, 100f);
-        Debug.DrawLine(bottomGoalCenter - Vector2.right * 1f, bottomGoalCenter + Vector2.right * 1f, Color.red, 100f);
-        Debug.DrawLine(bottomGoalCenter - Vector2.up * 1f, bottomGoalCenter + Vector2.up * 1f, Color.red, 100f);
+        goalNodes.Add(new Node(topGoalCenter));
+        goalNodes.Add(new Node(bottomGoalCenter));
 
         // Przypisywanie s¹siadów
         AssignNeighbors(gridWidth, gridHeight);
@@ -70,16 +69,82 @@ public class GridManager : MonoBehaviour
 
     private void AssignNeighbors(int gridWidth, int gridHeight)
     {
+        // Najpierw przypisujemy s¹siadów
         for (int i = 0; i < nodes.Count; i++)
         {
             Node currentNode = nodes[i];
             Vector2 currentPosition = currentNode.Position;
 
-            foreach (Node node in nodes)
+            for (int j = 0; j < nodes.Count; j++)
             {
-                if (Vector2.Distance(currentNode.Position, node.Position) <= nodeSpacing + 0.1f)
+                if (i == j) continue; // Nie porównuj wêz³a z samym sob¹
+
+                Node neighborNode = nodes[j];
+                Vector2 neighborPosition = neighborNode.Position;
+
+                // Oblicz odleg³oœci
+                float distanceX = Mathf.Abs(currentPosition.x - neighborPosition.x);
+                float distanceY = Mathf.Abs(currentPosition.y - neighborPosition.y);
+
+                // Odleg³oœæ po skosie
+                float distanceDiagonal = Mathf.Sqrt(distanceX * distanceX + distanceY * distanceY);
+
+                // Sprawdzamy, czy s¹siad znajduje siê w odleg³oœci równej lub mniejszej ni¿ `nodeSpacing`
+                bool isNeighbor = (distanceX <= nodeSpacing + 0.1f && distanceY <= nodeSpacing + 0.1f) ||
+                                  (distanceDiagonal <= nodeSpacing * Mathf.Sqrt(2) + 0.1f);
+
+                if (isNeighbor)
                 {
-                    currentNode.AddNeighbor(nodes.IndexOf(node));
+                    currentNode.AddNeighbor(j);
+                }
+            }
+        }
+
+        // Modyfikujemy s¹siedztwo wêz³ów na krawêdziach
+        ModifyAdjacencyForEdgeNodes(gridWidth, gridHeight);
+
+        // Nastêpnie rysujemy linie miêdzy wêz³ami na podstawie listy s¹siadów
+        DrawConnections();
+    }
+
+    private void DrawConnections()
+    {
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            Node currentNode = nodes[i];
+            Vector2 currentPosition = currentNode.Position;
+
+            foreach (int neighborIndex in currentNode.Neighbors)
+            {
+                Node neighborNode = nodes[neighborIndex];
+                Vector2 neighborPosition = neighborNode.Position;
+
+                // Rysowanie linii miêdzy wêz³ami
+                Debug.DrawLine(currentPosition, neighborPosition, Color.red, 100f);
+            }
+        }
+    }
+
+    private void ModifyAdjacencyForEdgeNodes(int gridWidth, int gridHeight)
+    {
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            Node currentNode = nodes[i];
+            Vector2 currentPosition = currentNode.Position;
+
+            // Sprawdzamy, czy wêze³ jest na krawêdzi siatki
+            if (currentPosition.x == 0 || currentPosition.x == gridWidth * nodeSpacing + offset.x)
+            {
+                // Usuñ powi¹zania z s¹siadami w osi Y
+                for (int j = 0; j < nodes.Count; j++)
+                {
+                    Node neighborNode = nodes[j];
+                    if (Mathf.Abs(neighborNode.Position.y - currentPosition.y) <= nodeSpacing &&
+                        Mathf.Abs(neighborNode.Position.x - currentPosition.x) <= 0.1f)
+                    {
+                        // Usuniêcie po³¹czenia
+                        currentNode.Neighbors.Remove(j);
+                    }
                 }
             }
         }
@@ -95,42 +160,19 @@ public class GridManager : MonoBehaviour
                 Gizmos.DrawSphere(new Vector3(node.Position.x, node.Position.y, 0), 0.1f);
             }
 
-            Gizmos.color = Color.blue;
-            int gridWidth = (int)Mathf.Sqrt(nodes.Count) - 1;
-            int gridHeight = gridWidth;
-
-            for (int x = 0; x < gridWidth; x++)
+            // Rysowanie wêz³ów bramkowych
+            if (goalNodes != null)
             {
-                for (int y = 0; y < gridHeight; y++)
+                Gizmos.color = Color.green;
+                foreach (var node in goalNodes)
                 {
-                    Vector2 position = new Vector2(x * nodeSpacing + offset.x, y * nodeSpacing + offset.y);
-                    Node currentNode = nodes.Find(node => node.Position == position);
-
-                    if (currentNode != null)
-                    {
-                        if (x < gridWidth && y < gridHeight)
-                        {
-                            Vector2 diagonal1 = new Vector2((x + 1) * nodeSpacing + offset.x, (y + 1) * nodeSpacing + offset.y);
-                            Gizmos.DrawLine(new Vector3(position.x, position.y, 0), new Vector3(diagonal1.x, diagonal1.y, 0));
-                        }
-                        if (x < gridWidth && y > 0)
-                        {
-                            Vector2 diagonal2 = new Vector2((x + 1) * nodeSpacing + offset.x, (y - 1) * nodeSpacing + offset.y);
-                            Gizmos.DrawLine(new Vector3(position.x, position.y, 0), new Vector3(diagonal2.x, diagonal2.y, 0));
-                        }
-                    }
+                    Gizmos.DrawSphere(new Vector3(node.Position.x, node.Position.y, 0), 0.1f);
                 }
             }
         }
 
-        if (goalNodes != null)
-        {
-            Gizmos.color = Color.green;
-            foreach (var node in goalNodes)
-            {
-                Gizmos.DrawSphere(new Vector3(node.Position.x, node.Position.y, 0), 0.1f);
-            }
-        }
+        // Opcjonalne rysowanie po³¹czeñ w edytorze
+        // DrawConnections();
     }
 
     private Vector2 GetClosestNodePosition(Vector2 position)
