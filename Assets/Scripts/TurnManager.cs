@@ -32,34 +32,26 @@ public class TurnManager : MonoBehaviour
             Debug.Log("Dzia³a Enter");
             Vector3 currentPosition = ballMovement.ball.transform.position;
 
-            //if (IsNeighborNode(roundedTarget))
-            //{
-            //    targetPosition = roundedTarget;
-            //    isMoving = true;
-            //}
-            if (ballMovement.IsNeighborNode(lastPosition))
-            //  if (ballMovement.IsNeighborNode(currentPosition))
-            {
-                Node previousNode = ballMovement.GetNodeAtPosition(lastPosition);
-                Node currentNode = ballMovement.GetNodeAtPosition(currentPosition);
+            Node previousNode = ballMovement.GetNodeAtPosition(lastPosition);
+            Node currentNode = ballMovement.GetNodeAtPosition(currentPosition);
+
+//
+       //     if (ballMovement.IsNeighborNode(lastPosition) && (pathRenderer.IsMoveLegal(previousNode, currentNode)))
 
 
 
-               ballMovement.RemoveNeighborConnection(previousNode, currentNode);
-                pathRenderer.AddPosition(lastPosition, currentPosition, playerColor);
+          if (pathRenderer.IsMoveLegal(previousNode, currentNode))
+                {
+
+                pathRenderer.AddPosition(previousNode, currentNode, playerColor);
+                //test!
+            //    pathRenderer.MarkConnectionAsUsed(previousNode, currentNode);
+
+              //  ballMovement.RemoveNeighborConnection(previousNode, currentNode);
+
                 lastPosition = currentPosition;
-           //     isPlayerTurn = false;
-                //   PerformAITurn();
+
             }
-
-
-            //if (IsMoveValid(lastPosition, currentPosition))
-            //{
-            //    pathRenderer.AddPosition(lastPosition, currentPosition, playerColor);
-            //    lastPosition = currentPosition;
-            //    isPlayerTurn = false;
-            // //   PerformAITurn();
-            //}
             else
             {
                 ballMovement.ball.transform.position = lastPosition;
@@ -72,18 +64,10 @@ public class TurnManager : MonoBehaviour
         AIController aiController = FindObjectOfType<AIController>();
         if (aiController != null)
         {
-            aiController.PerformAITurn();
+     //       aiController.PerformAITurn();
         }
 
         isPlayerTurn = true;
     }
 
-    //bool IsMoveValid(Vector3 startPos, Vector3 endPos)
-    //{
-    //    float distanceX = Mathf.Abs(endPos.x - startPos.x);
-    //    float distanceY = Mathf.Abs(endPos.y - startPos.y);
-    //    float distanceZ = Mathf.Abs(endPos.z - startPos.z);
-
-    //    return (distanceX <= 1f && distanceY <= 1f && distanceZ <= 1f);
-    //}
 }

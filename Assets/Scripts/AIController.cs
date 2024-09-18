@@ -19,34 +19,34 @@ public class AIController : MonoBehaviour
         SetTargetPositionForAI();
     }
 
-    public void PerformAITurn()
-    {
-        // Oblicz kierunek do celu
-        Vector3 direction = (targetPosition - ballMovement.ball.transform.position).normalized;
-        // Oblicz now¹ pozycjê
-        Vector3 newTargetPosition = ballMovement.ball.transform.position + direction * ballMovement.gridSize;
-        // Zaokr¹glij do najbli¿szego pola siatki
-        newTargetPosition = new Vector3(
-            Mathf.Round(newTargetPosition.x / ballMovement.gridSize) * ballMovement.gridSize,
-            Mathf.Round(newTargetPosition.y / ballMovement.gridSize) * ballMovement.gridSize,
-            ballMovement.ball.transform.position.z
-        );
+    //public void PerformAITurn()
+    //{
+    //    // Oblicz kierunek do celu
+    //    Vector3 direction = (targetPosition - ballMovement.ball.transform.position).normalized;
+    //    // Oblicz now¹ pozycjê
+    //    Vector3 newTargetPosition = ballMovement.ball.transform.position + direction * ballMovement.gridSize;
+    //    // Zaokr¹glij do najbli¿szego pola siatki
+    //    newTargetPosition = new Vector3(
+    //        Mathf.Round(newTargetPosition.x / ballMovement.gridSize) * ballMovement.gridSize,
+    //        Mathf.Round(newTargetPosition.y / ballMovement.gridSize) * ballMovement.gridSize,
+    //        ballMovement.ball.transform.position.z
+    //    );
 
-        // SprawdŸ, czy nowa pozycja jest w obrêbie areny
-        if (ballMovement.IsWithinArena(newTargetPosition))
-        {
-            turnManager.pathRenderer.AddPosition(ballMovement.ball.transform.position, newTargetPosition, Color.red);
-            ballMovement.SetTargetPosition(newTargetPosition - ballMovement.ball.transform.position);
-            ballMovement.MoveBall();
-            Debug.Log($"AI Move: {ballMovement.ball.transform.position} to {newTargetPosition}");
-        }
-        else
-        {
-            Debug.Log("AI move out of bounds.");
-        }
+    //    // SprawdŸ, czy nowa pozycja jest w obrêbie areny
+    //    if (ballMovement.IsWithinArena(newTargetPosition))
+    //    {
+    //        turnManager.pathRenderer.AddPosition(ballMovement.ball.transform.position, newTargetPosition, Color.red);
+    //        ballMovement.SetTargetPosition(newTargetPosition - ballMovement.ball.transform.position);
+    //        ballMovement.MoveBall();
+    //        Debug.Log($"AI Move: {ballMovement.ball.transform.position} to {newTargetPosition}");
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("AI move out of bounds.");
+    //    }
 
-        turnManager.isPlayerTurn = true;
-    }
+    //    turnManager.isPlayerTurn = true;
+    //}
 
     public void SetTargetPositionForAI()
     {
