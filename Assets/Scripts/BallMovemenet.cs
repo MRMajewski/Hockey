@@ -173,27 +173,6 @@ public class BallMovement : MonoBehaviour
         return false;
     }
 
-
-    //private bool IsNeighborNode(Vector3 targetPosition)
-    //{
-    //    Vector3 currentNodePosition = GetClosestNodePosition(ball.transform.position);
-    //    Node currentNode = gridManager.GetNodeAtPosition(currentNodePosition);
-
-    //    if (currentNode != null)
-    //    {
-    //        List<Node> neighbors = gridManager.GetNeighbors(currentNode);
-
-    //        foreach (var neighbor in neighbors)
-    //        {
-    //            if (Vector3.Distance(targetPosition, neighbor.Position) <= gridSize * 0.5f)
-    //            {
-    //                return true;
-    //            }
-    //        }
-    //    }
-
-    //    return false;
-    //}
     public Node GetNodeAtPosition(Vector3 position)
     {
         Node closestNode = null;
@@ -223,20 +202,6 @@ public class BallMovement : MonoBehaviour
         }
         return false;
     }
-
-    //public void MoveBall()
-    //{
-    //    ball.transform.position = Vector3.MoveTowards(ball.transform.position, targetPosition, gridSize);
-    //    if (Vector3.Distance(ball.transform.position, targetPosition) < 0.01f)
-    //    {
-    //        ball.transform.position = targetPosition;
-    //        isMoving = false;
-    //        // Odtwórz dŸwiêk ruchu
-    //        // ballAudioSource.PlayOneShot(moveSound);
-    //        // SprawdŸ, czy pi³ka trafi³a do bramki
-    //        // CheckGoal();
-    //    }
-    //}
 
     public void MoveBall()
     {
@@ -269,9 +234,6 @@ public class BallMovement : MonoBehaviour
     }
     public void RemoveNeighborConnection(Node nodeA, Node nodeB)
     {
-      //  int indexA = gridManager.GetNodeIndex(nodeA);
-      //  int indexB = gridManager.GetNodeIndex(nodeB);
-
         nodeA.RemoveNeighbor(nodeB);
         nodeB.RemoveNeighbor(nodeA);
     }
