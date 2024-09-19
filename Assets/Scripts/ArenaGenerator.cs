@@ -18,17 +18,17 @@ public class ArenaGenerator : MonoBehaviour
     [SerializeField]
     private GridManager gridManager;
 
-    private void OnValidate()
-    {
-        if (width % 2 != 0)
-        {
-            width = Mathf.Max(2, width - 1);
-        }
-        if (height % 2 != 0)
-        {
-            height = Mathf.Max(2, height - 1);
-        }
-    }
+    //private void OnValidate()
+    //{
+    //    if (width % 2 != 0)
+    //    {
+    //        width = Mathf.Max(2, width - 1);
+    //    }
+    //    if (height % 2 != 0)
+    //    {
+    //        height = Mathf.Max(2, height - 1);
+    //    }
+    //}
 
     public void GenerateArena()
     {
@@ -38,8 +38,10 @@ public class ArenaGenerator : MonoBehaviour
             return;
         }
 
+        Debug.Log("Clearing arena...");
         ClearArena();
 
+        Debug.Log("Generating grid...");
         Vector3 basePosition = new Vector3(-width * cellSize / 2 + offset.x, -height * cellSize / 2 + offset.y, 0);
 
         for (int x = 0; x < width; x++)
@@ -51,9 +53,13 @@ public class ArenaGenerator : MonoBehaviour
             }
         }
 
+        Debug.Log("Adding goals...");
         AddGoals();
 
+        Debug.Log("Generating nodes...");
         gridManager.GenerateNodes(width, height);
+
+        Debug.Log("Arena generated.");
     }
 
     void AddGoals()
@@ -83,7 +89,7 @@ public class ArenaGenerator : MonoBehaviour
         {
             foreach (Transform child in parent)
             {
-                DestroyImmediate(child.gameObject);
+                Destroy(child.gameObject);
             }
         }
     }

@@ -48,7 +48,8 @@ public class Node
 }
 
 public class GridManager : MonoBehaviour
-{  [SerializeField]
+{
+    [SerializeField]
     private float nodeSpacing = 1f;
     private Vector2 offset;
     [SerializeField]
@@ -169,7 +170,7 @@ public class GridManager : MonoBehaviour
     internal List<Node> GetNeighbors(Node currentNode)
     {
         List<Node> neighbourNodesList = new List<Node>();
-       // List<int> neighborsIndexes = currentNode.GetNeighbors();
+        // List<int> neighborsIndexes = currentNode.GetNeighbors();
 
         foreach (var node in neighbourNodesList)
         {
@@ -209,26 +210,26 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
-    {
-        if (nodes != null)
-        {
-            Gizmos.color = Color.red;
-            foreach (var node in nodes)
-            {
-                Gizmos.DrawSphere(new Vector3(node.Position.x, node.Position.y, 0), 0.1f);
-            }
+    //void OnDrawGizmos()
+    //{
+    //    if (nodes != null)
+    //    {
+    //        Gizmos.color = Color.red;
+    //        foreach (var node in nodes)
+    //        {
+    //            Gizmos.DrawSphere(new Vector3(node.Position.x, node.Position.y, 0), 0.1f);
+    //        }
 
-            if (goalNodes != null)
-            {
-                Gizmos.color = Color.green;
-                foreach (var node in goalNodes)
-                {
-                    Gizmos.DrawSphere(new Vector3(node.Position.x, node.Position.y, 0), 0.1f);
-                }
-            }
-        }
-    }
+    //        if (goalNodes != null)
+    //        {
+    //            Gizmos.color = Color.green;
+    //            foreach (var node in goalNodes)
+    //            {
+    //                Gizmos.DrawSphere(new Vector3(node.Position.x, node.Position.y, 0), 0.1f);
+    //            }
+    //        }
+    //    }
+    //}
 
     private Vector2 GetClosestNodePosition(Vector2 position)
     {

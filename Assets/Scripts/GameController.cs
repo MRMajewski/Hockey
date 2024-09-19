@@ -21,6 +21,9 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private AIController aiController;
 
+    [SerializeField]
+    private TurnManager turnManager;
+
     private bool isPlayerTurn = true;
     [SerializeField]
     private bool gameEnded = false;
@@ -47,8 +50,8 @@ public class GameController : MonoBehaviour
     }
     private void Update()
     {
-        if (!isGameStarted || gameEnded)
-            return;
+        //   if (!isGameStarted || gameEnded)
+        //      return;
 
         //if (CheckForWin())
         //{
@@ -89,12 +92,21 @@ public class GameController : MonoBehaviour
 
     public void StartGame()
     {
-        if (isGameStarted)
-            return;
+        //   if (isGameStarted)
+        //       return;
 
         isGameStarted = true;
         ResetGame();
+        Debug.Log(" arenaGenerator.GenerateArena()");
         arenaGenerator.GenerateArena();
+        Debug.Log("  aiController.SetGoalNodeForAI();");
+        aiController.SetGoalNodeForAI();
+        Debug.Log("   ballMovement.BallInit(); ");
+        ballMovement.BallInit();
+        Debug.Log("    aiController.SetGoalNodeForAI(); ");
+        aiController.SetGoalNodeForAI();
+        Debug.Log("      turnManager.TurnManagerInit(); ");
+        turnManager.TurnManagerInit();
         isPlayerTurn = true;
         gameEnded = false;
         Debug.Log("Game Started");
@@ -106,12 +118,12 @@ public class GameController : MonoBehaviour
         ballMovement.targetPosition = Vector3.zero;
         ball.transform.position = Vector3.zero;
         pathRenderer.ClearPaths();
+        //
+        //    aiController.ResetAI();
+        //   aiController.SetGoalNodeForAI();
 
-        aiController.ResetAI();
-        aiController.SetTargetPositionForAI();
-
-        LoadScores();
-        UpdateScoreUI();
+        //      LoadScores();
+        //     UpdateScoreUI();
     }
 
     public void ResetScores()

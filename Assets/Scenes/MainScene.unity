@@ -442,7 +442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1020,7 +1020,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1493,7 +1493,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1796,6 +1796,16 @@ MonoBehaviour:
   lastPosition: {x: 0, y: 0, z: 0}
   targetPosition: {x: 0, y: 0, z: 0}
   pathRenderer: {fileID: 1648049777}
+  currentNode:
+    Position: {x: 0, y: 0}
+    IsOccupied: 0
+    Neighbors: []
+    IsGoalNode: 0
+  lastNode:
+    Position: {x: 0, y: 0}
+    IsOccupied: 0
+    Neighbors: []
+    IsGoalNode: 0
 --- !u!114 &1648049775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1810,6 +1820,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ballMovement: {fileID: 1648049774}
   pathRenderer: {fileID: 1648049777}
+  aiController: {fileID: 1648049776}
   isPlayerTurn: 1
 --- !u!114 &1648049776
 MonoBehaviour:
@@ -1825,7 +1836,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ballMovement: {fileID: 1648049774}
   turnManager: {fileID: 1648049775}
-  targetPosition: {x: 0, y: 0, z: 0}
+  pathRenderer: {fileID: 1648049777}
+  targetNode:
+    Position: {x: 0, y: 0}
+    IsOccupied: 0
+    Neighbors: []
+    IsGoalNode: 0
+  currentNode:
+    Position: {x: 0, y: 0}
+    IsOccupied: 0
+    Neighbors: []
+    IsGoalNode: 0
+  goalNode:
+    Position: {x: 0, y: 0}
+    IsOccupied: 0
+    Neighbors: []
+    IsGoalNode: 0
 --- !u!114 &1648049777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1859,6 +1885,7 @@ MonoBehaviour:
   infoText: {fileID: 838990526}
   arenaGenerator: {fileID: 837017961}
   aiController: {fileID: 1648049776}
+  turnManager: {fileID: 1648049775}
   gameEnded: 0
   isGameStarted: 0
   gridManager: {fileID: 837017963}
@@ -1996,7 +2023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 250142780}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &1798549639

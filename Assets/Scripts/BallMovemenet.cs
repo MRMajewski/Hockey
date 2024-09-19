@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 public class BallMovement : MonoBehaviour
@@ -12,51 +12,51 @@ public class BallMovement : MonoBehaviour
     public Vector2Int arenaSize = new Vector2Int(8, 10);
     public int goalWidth = 2;
     [SerializeField]
-    public Vector3 lastPosition;
+    public Vector2 lastPosition;
     [SerializeField]
-    public Vector3 targetPosition;
+    public Vector2 targetPosition;
     private bool isMoving = false;
 
     [SerializeField]
     private BallPathRenderer pathRenderer;
 
-    private void Start()
+    [SerializeField]
+    private Node currentNode;
+    [SerializeField]
+    private Node targetNode;
+    [SerializeField]
+    private Node lastNode;
+
+    public void BallInit()
     {
-        targetPosition = ball.transform.position;
-        lastPosition = ball.transform.position;
+        currentNode = gridManager.GetNodeAtPosition(ball.transform.position);
+        targetPosition = currentNode.Position;
+        lastNode = currentNode;
     }
 
     private void Update()
     {
         if (!gameController.isGameStarted) return;
-        HandleBallMovement();
 
-        //if (Input.GetKeyDown(KeyCode.Return))
-        //{
-        //    Vector3 currentPosition = ball.transform.position;
-
-        //    if (IsValidMove(currentPosition, targetPosition))
-        //    {
-        //        pathRenderer.AddPosition(lastPosition, currentPosition, Color.blue);
-        //        lastPosition = currentPosition;
-        //    }
-        //    else
-        //    {
-        //        ball.transform.position = lastPosition;
-        //        targetPosition = lastPosition;
-        //        isMoving = false;
-        //    }
-        //}
+        if (Input.anyKey)
+        {
+            if (HandleBallMovement()) // Sprawdzamy, czy udaÅ‚o siÄ™ poruszyÄ‡
+            {
+                MoveBall(); // JeÅ¼eli ruch jest moÅ¼liwy, wykonujemy przesuniÄ™cie
+            }
+            else
+                MoveBall(false);
+        }
     }
 
-    private Vector3 GetClosestNodePosition(Vector3 position)
+    private Vector2 GetClosestNodePosition(Vector2 position)
     {
         Node closestNode = null;
         float closestDistance = Mathf.Infinity;
 
         foreach (var node in gridManager.GetAllNodes())
         {
-            float distance = Vector3.Distance(position, node.Position);
+            float distance = Vector2.Distance(position, node.Position);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
@@ -67,104 +67,123 @@ public class BallMovement : MonoBehaviour
         return closestNode != null ? closestNode.Position : position;
     }
 
-    private Vector3 GetClosestGoalNodePosition(Vector3 position)
+    private bool HandleBallMovement()
     {
-        Node closestGoalNode = null;
-        float closestDistance = Mathf.Infinity;
+        bool didMove = false;
 
-        foreach (var node in gridManager.GetGoalNodes())
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) // Ruch w gÃ³rÄ™
         {
-            float distance = Vector3.Distance(position, node.Position);
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closestGoalNode = node;
-            }
+            didMove = TryMoveToNode(Vector2.up);
         }
-
-        return closestGoalNode != null ? closestGoalNode.Position : position;
-    }
-
-    private void HandleBallMovement()
-    {
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) // Ruch w górê
+        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) // Ruch w dÃ³Å‚
         {
-            SetTargetPosition(Vector3.up);
-        }
-        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) // Ruch w dó³
-        {
-            SetTargetPosition(Vector3.down);
+            didMove = TryMoveToNode(Vector2.down);
         }
         else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) // Ruch w lewo
         {
-            SetTargetPosition(Vector3.left);
+            didMove = TryMoveToNode(Vector2.left);
         }
         else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) // Ruch w prawo
         {
-            SetTargetPosition(Vector3.right);
+            didMove = TryMoveToNode(Vector2.right);
         }
-        else if (Input.GetKeyDown(KeyCode.Q)) // Ruch po skosie w lewo-górê
+        else if (Input.GetKeyDown(KeyCode.Q)) // Ruch po skosie w lewo-gÃ³rÄ™
         {
-            SetTargetPosition(new Vector3(-1, 1, 0));
+            didMove = TryMoveToNode(new Vector2(-1, 1));
         }
-        else if (Input.GetKeyDown(KeyCode.E)) // Ruch po skosie w prawo-górê
+        else if (Input.GetKeyDown(KeyCode.E)) // Ruch po skosie w prawo-gÃ³rÄ™
         {
-            SetTargetPosition(new Vector3(1, 1, 0));
+            didMove = TryMoveToNode(new Vector2(1, 1));
         }
-        else if (Input.GetKeyDown(KeyCode.Z)) // Ruch po skosie w lewo-dó³
+        else if (Input.GetKeyDown(KeyCode.Z)) // Ruch po skosie w lewo-dÃ³Å‚
         {
-            SetTargetPosition(new Vector3(-1, -1, 0));
+            didMove = TryMoveToNode(new Vector2(-1, -1));
         }
-        else if (Input.GetKeyDown(KeyCode.C)) // Ruch po skosie w prawo-dó³
+        else if (Input.GetKeyDown(KeyCode.C)) // Ruch po skosie w prawo-dÃ³Å‚
         {
-            SetTargetPosition(new Vector3(1, -1, 0));
+            didMove = TryMoveToNode(new Vector2(1, -1));
         }
-        if (isMoving)
-        {
-            MoveBall();
-        }
+
+        return didMove; // Zwracamy, czy ruch siÄ™ udaÅ‚
     }
 
-    public void SetTargetPosition(Vector3 direction)
+    public bool TryMoveToNode(Vector2 direction)
     {
-        Vector3 newTarget = ball.transform.position + direction * gridSize;
+        // Sprawdzenie, czy ruch jest po skosie
+        bool isDiagonalMove = Mathf.Abs(direction.x) > 0 && Mathf.Abs(direction.y) > 0;
 
-        // Zaokr¹glij do najbli¿szego wêz³a
-        Vector3 roundedTarget = new Vector3(
-            Mathf.Round(newTarget.x / gridSize) * gridSize,
-            Mathf.Round(newTarget.y / gridSize) * gridSize,
-            ball.transform.position.z
-        );
+        // JeÅ›li ruch po skosie, przemnÃ³Å¼ przez âˆš2
+        float distanceMultiplier = isDiagonalMove ? Mathf.Sqrt(2) : 1f;
 
-        // SprawdŸ, czy roundedTarget jest s¹siadem aktualnej pozycji
-        if (IsNeighborNode(roundedTarget))
+        // Oblicz nowÄ… pozycjÄ™ z uwzglÄ™dnieniem dÅ‚ugoÅ›ci ruchu
+        Vector2 newPosition = currentNode.Position + direction * gridSize * distanceMultiplier;
+
+        Node targetNode = gridManager.GetNodeAtPosition(newPosition);
+
+        // Sprawdzenie, czy docelowy wÄ™zeÅ‚ jest sÄ…siadem
+        if (currentNode.IsNeighbor(targetNode))
         {
-            targetPosition = roundedTarget;
+            this.targetNode = targetNode; // Ustawienie docelowego wÄ™zÅ‚a
             isMoving = true;
+            return true; // Ruch udany
         }
         else
         {
             Debug.Log("Invalid move: Not a neighbor node.");
+            return false; // Ruch nieudany
         }
     }
-
-    public bool IsNeighborNode(Vector3 targetPosition)
+    public void MoveBall(bool isMoveLegal = true)
     {
-        Vector3 currentNodePosition = GetClosestNodePosition(ball.transform.position);
+        if (isMoveLegal)
+        {
+            // Ustawiamy pozycjÄ™ piÅ‚ki na pozycjÄ™ docelowego wÄ™zÅ‚a
+            ball.transform.position = targetNode.Position;
+
+            // Ustawiamy nowy aktualny wÄ™zeÅ‚
+            currentNode = targetNode;
+            Debug.Log($"MoveBall: {currentNode.Position}"); // Debugowanie
+        }
+        else
+        {
+            ball.transform.position = currentNode.Position;
+            Debug.Log($"MoveBall (illegal): {currentNode.Position}"); // Debugowanie
+        }
+        isMoving = false;
+        Debug.Log("Current node Pos " + currentNode.Position);
+    }
+
+
+    public Node GetCurrentNode()
+    {
+        Vector2 currentNodePosition = GetClosestNodePosition((Vector2)ball.transform.position);
+        currentNode = gridManager.GetNodeAtPosition(currentNodePosition);
+        return currentNode;
+    }
+
+    public void SetCurrentNode(Node node)
+    {
+        currentNode = node;
+        targetPosition = node.Position;
+    }
+
+    public Node GetLastNode()
+    {
+        return lastNode;
+    }
+
+    public bool IsNeighborNode(Vector2 targetPosition)
+    {
+        Vector2 currentNodePosition = GetClosestNodePosition((Vector2)ball.transform.position);
         Node currentNode = gridManager.GetNodeAtPosition(currentNodePosition);
 
         if (currentNode != null)
         {
-            //    List<int> neighborsIndexes = currentNode.GetNeighbors();
-
-            //   List<Node> neighbors = gridManager.GetNeighbors(currentNode);
-
-            List<Node> neighbors= currentNode.GetNeighbors();
-
+            List<Node> neighbors = currentNode.GetNeighbors();
 
             foreach (var neighbor in neighbors)
             {
-                if (Vector3.Distance(targetPosition, neighbor.Position) <= gridSize * 0.5f)
+                if (Vector2.Distance(targetPosition, neighbor.Position) <= gridSize * 0.5f)
                 {
                     return true;
                 }
@@ -173,96 +192,23 @@ public class BallMovement : MonoBehaviour
         return false;
     }
 
-    public Node GetNodeAtPosition(Vector3 position)
+    public Node GetNodeAtPosition(Vector2 position)
     {
         Node closestNode = null;
         float closestDistance = Mathf.Infinity;
 
-        // Za³ó¿my, ¿e masz metodê w GridManager, która zwraca wszystkie wêz³y
         foreach (Node node in gridManager.GetAllNodes())
         {
-            float distance = Vector3.Distance(position, (Vector3)node.Position);
+            float distance = Vector2.Distance(position, node.Position);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
                 closestNode = node;
             }
         }
-
         return closestNode;
     }
-    private bool IsGoalPosition(Vector3 position)
-    {
-        foreach (var goalNode in gridManager.GetGoalNodes())
-        {
-            if (Vector3.Distance(position, goalNode.Position) <= gridSize)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    public void MoveBall()
-    {
-        Vector3 previousPosition = ball.transform.position;
-        ball.transform.position = Vector3.MoveTowards(ball.transform.position, targetPosition, gridSize);
 
-        if (Vector3.Distance(ball.transform.position, targetPosition) < 0.01f)
-        {
-            ball.transform.position = targetPosition;
-            isMoving = false;
 
-            // Usuniêcie po³¹czenia miêdzy starym a nowym node'em
-            Vector3 previousNodePosition = GetClosestNodePosition(previousPosition);
-            Vector3 currentNodePosition = GetClosestNodePosition(targetPosition);
-
-            Node previousNode = gridManager.GetNodeAtPosition(previousNodePosition);
-            Node currentNode = gridManager.GetNodeAtPosition(currentNodePosition);
-
-            //if (previousNode != null && currentNode != null)
-            //{
-            //    RemoveNeighborConnection(previousNode, currentNode);
-            //}
-
-            // Odtwórz dŸwiêk ruchu
-            // ballAudioSource.PlayOneShot(moveSound);
-
-            // SprawdŸ, czy pi³ka trafi³a do bramki
-            // CheckGoal();
-        }
-    }
-    public void RemoveNeighborConnection(Node nodeA, Node nodeB)
-    {
-        nodeA.RemoveNeighbor(nodeB);
-        nodeB.RemoveNeighbor(nodeA);
-    }
-    public bool IsWithinArena(Vector3 position)
-    {
-        float arenaLeft = -arenaSize.x / 2f * gridSize;
-        float arenaRight = arenaSize.x / 2f * gridSize;
-        float arenaBottom = -arenaSize.y / 2f * gridSize;
-        float arenaTop = arenaSize.y / 2f * gridSize;
-
-        bool withinVerticalBounds = position.y > arenaBottom - gridSize && position.y < arenaTop + gridSize;
-        bool withinHorizontalBounds = position.x >= arenaLeft && position.x <= arenaRight;
-
-        bool withinTopGoal = position.y >= arenaTop && (position.x >= arenaLeft + (gridSize * (arenaSize.x / 2 - goalWidth / 2)) && position.x <= arenaRight - (gridSize * (arenaSize.x / 2 - goalWidth / 2)));
-        bool withinBottomGoal = position.y <= arenaBottom && (position.x >= arenaLeft + (gridSize * (arenaSize.x / 2 - goalWidth / 2)) && position.x <= arenaRight - (gridSize * (arenaSize.x / 2 - goalWidth / 2)));
-
-        return (withinVerticalBounds && withinHorizontalBounds) || withinTopGoal || withinBottomGoal;
-    }
-
-    private bool IsValidMove(Vector3 currentPosition, Vector3 targetPosition)
-    {
-        // SprawdŸ, czy targetPosition jest w pobli¿u najbli¿szego wêz³a lub bramki
-        Vector3 closestNode = GetClosestNodePosition(targetPosition);
-        Vector3 closestGoalNode = GetClosestGoalNodePosition(targetPosition);
-
-        // Mo¿na dostosowaæ tolerancjê, np. `gridSize * Mathf.Sqrt(2)` dla wêz³ów i bramek
-        bool isNearNode = Vector3.Distance(targetPosition, closestNode) <= gridSize * 0.5f;
-        bool isNearGoalNode = Vector3.Distance(targetPosition, closestGoalNode) <= gridSize * 0.5f;
-
-        return isNearNode || isNearGoalNode;
-    }
 }
