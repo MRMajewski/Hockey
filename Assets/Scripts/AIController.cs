@@ -67,7 +67,7 @@ public class AIController : MonoBehaviour
             // Przeskaluj wektor ruchu na odpowiednią odległość
             Vector2 newPosition = currentNode.Position + direction.normalized * moveDistance;
 
-            pathRenderer.AddPosition(currentNode, bestNode, Color.red);
+            pathRenderer.AddPosition(ref currentNode, ref bestNode, Color.red);
             bool moveSuccessful = ballMovement.TryMoveToNode(newPosition - ballMovement.GetTargetNode().Position);
 
             if (moveSuccessful)

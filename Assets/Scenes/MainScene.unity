@@ -1794,8 +1794,7 @@ MonoBehaviour:
   gridSize: 1
   arenaSize: {x: 8, y: 10}
   goalWidth: 2
-  lastPosition: {x: 0, y: 0}
-  targetPosition: {x: 0, y: 0}
+  pathRenderer: {fileID: 0}
   currentTemporaryNode:
     Position: {x: 0, y: 0}
     IsOccupied: 0
@@ -1806,6 +1805,7 @@ MonoBehaviour:
     IsOccupied: 0
     Neighbors: []
     IsGoalNode: 0
+  temporaryBallPos: {x: 0, y: 0}
 --- !u!114 &1648049775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1834,10 +1834,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 228bda4273e92334688c2f7feeba8bac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridManager: {fileID: 837017963}
   ballMovement: {fileID: 1648049774}
   turnManager: {fileID: 1648049775}
   pathRenderer: {fileID: 1648049777}
+  targetNode:
+    Position: {x: 0, y: 0}
+    IsOccupied: 0
+    Neighbors: []
+    IsGoalNode: 0
+  currentNode:
+    Position: {x: 0, y: 0}
+    IsOccupied: 0
+    Neighbors: []
+    IsGoalNode: 0
   goalNode:
     Position: {x: 0, y: 0}
     IsOccupied: 0
@@ -1856,6 +1865,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineSegmentPrefab: {fileID: 8838379167332029372, guid: b99e483af18ecd0439a1e891fb58cc38, type: 3}
+  pathsPrefabParent: {fileID: 1944550973}
 --- !u!114 &1648049778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2120,7 +2130,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1944550973}
   m_Layer: 0
-  m_Name: PlayerPathRenderer
+  m_Name: PathParent[]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

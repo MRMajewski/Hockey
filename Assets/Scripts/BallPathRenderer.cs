@@ -9,7 +9,10 @@ public class BallPathRenderer : MonoBehaviour
 
     private HashSet<(Node, Node)> drawnPaths = new HashSet<(Node, Node)>();
 
-    public void AddPosition(Node fromNode, Node toNode, Color color)
+    [SerializeField]
+    private Transform pathsPrefabParent;
+
+    public void AddPosition(ref Node fromNode, ref Node  toNode, Color color)
     {
      //   if (IsMoveLegal(fromNode, toNode))
         {
@@ -152,11 +155,11 @@ public class BallPathRenderer : MonoBehaviour
 
     private void CreateLineSegment(Node fromNode, Node toNode, Color color)
     {
-        Vector3 from = fromNode.Position;
-        Vector3 to = toNode.Position;
+        Vector2 from = fromNode.Position;
+        Vector2 to = toNode.Position;
 
-        GameObject segment = Instantiate(lineSegmentPrefab, transform);
-        Vector3 midPoint = (from + to) / 2;
+        GameObject segment = Instantiate(lineSegmentPrefab, pathsPrefabParent);
+        Vector2 midPoint = (from + to) / 2;
         segment.transform.position = midPoint;
 
         float distance = Vector3.Distance(from, to);
@@ -174,6 +177,33 @@ public class BallPathRenderer : MonoBehaviour
         drawnPaths.Add((fromNode, toNode));
         drawnPaths.Add((toNode, fromNode)); // Dodajemy równie¿ w odwrotnej kolejnoœci
     }
+
+
+
+    //private void CreateLineSegment(Node fromNode, Node toNode, Color color)
+    //{
+    //    Vector3 from = fromNode.Position;
+    //    Vector3 to = toNode.Position;
+
+    //    GameObject segment = Instantiate(lineSegmentPrefab, transform);
+    //    Vector3 midPoint = (from + to) / 2;
+    //    segment.transform.position = midPoint;
+
+    //    float distance = Vector3.Distance(from, to);
+    //    segment.transform.localScale = new Vector3(distance, .2f, 1);
+
+    //    float angle = Mathf.Atan2(to.y - from.y, to.x - from.x) * Mathf.Rad2Deg;
+    //    segment.transform.rotation = Quaternion.Euler(0, 0, angle);
+
+    //    var spriteRenderer = segment.GetComponent<SpriteRenderer>();
+    //    if (spriteRenderer != null)
+    //    {
+    //        spriteRenderer.color = color;
+    //    }
+
+    //    drawnPaths.Add((fromNode, toNode));
+    //    drawnPaths.Add((toNode, fromNode)); // Dodajemy równie¿ w odwrotnej kolejnoœci
+    //}
 
     private bool DoesLineIntersect(Node startNode, Node endNode)
     {

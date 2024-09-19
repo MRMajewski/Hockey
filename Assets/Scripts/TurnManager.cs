@@ -40,12 +40,11 @@ public class TurnManager : MonoBehaviour
 
             Node currentNode = ballMovement.GetConfirmedNode(); // Tymczasowy wêze³ pi³ki
         //    Node targetNode = ballMovement.GetTargetNode(); // Ostateczny wêze³, który chcemy zatwierdziæ
-            Node targetNode = ballMovement.currentTemporaryNode;
+            Node targetNode = ballMovement.GetTargetNode();
 
-            if (pathRenderer.IsMoveLegal(currentNode, targetNode))
+            if (pathRenderer.IsMoveLegal( currentNode, targetNode))
                 {
-
-                pathRenderer.AddPosition(currentNode, targetNode, playerColor);
+                pathRenderer.AddPosition(ref currentNode, ref targetNode, playerColor);
                 lastConfirmedNode = targetNode;
                 isPlayerTurn = false;
                 Debug.Log("Koniec tury gracza!");
