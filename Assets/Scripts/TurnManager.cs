@@ -6,7 +6,7 @@ public class TurnManager : MonoBehaviour
     public BallPathRenderer pathRenderer;
     public AIController aiController;
 
-    private Node lastNode;  // Wêze³ zamiast Vector3
+    private Node lastConfirmedNode;
     private Color playerColor = Color.blue;
     private Color aiColor = Color.red;
 
@@ -21,20 +21,13 @@ public class TurnManager : MonoBehaviour
 
     public void TurnManagerInit()
     {
-        lastNode = ballMovement.GetCurrentNode();  // U¿ywamy metody do uzyskania aktualnego wêz³a
+        lastConfirmedNode = ballMovement.GetConfirmedNode(); // Ustawiamy pierwszy zatwierdzony wêze³
         isPlayerTurn = true;
     }
-
     void Update()
     {
-        //  if (isPlayerTurn)
-        //    {
+        if (isPlayerTurn)
         HandlePlayerTurn();
-        //}
-        //else
-        //{
-        //    PerformAITurn();
-        //}
     }
 
     void HandlePlayerTurn()
@@ -42,37 +35,27 @@ public class TurnManager : MonoBehaviour
         if (Input.GetButtonDown("Submit"))
         {
             Debug.Log("Dzia³a Enter");
+            Debug.Log("currentTemporaryNode Position w HandlePlayer" + ballMovement.GetTargetNode().Position);
+            Debug.Log("currentTemporaryNode Position w HandlePlayer" + ballMovement.currentTemporaryNode.Position);
 
-            Node currentNode = ballMovement.GetCurrentNode();  // Pobierz aktualny wêze³
-
-
-            Debug.Log("lastNode pos: "+ lastNode.Position);
-
-            Debug.Log("currentNode pos: " + currentNode.Position);
-
-            Node targetNode = ballMovement.GetTargetNode();
-        //    Node previousNode= ballMovement.GetNodeAtPosition((Vector2)ballMovement.ball.transform.position);
-
-       //     Debug.Log("previousNode pos: " + previousNode.Position);
+            Node currentNode = ballMovement.GetConfirmedNode(); // Tymczasowy wêze³ pi³ki
+        //    Node targetNode = ballMovement.GetTargetNode(); // Ostateczny wêze³, który chcemy zatwierdziæ
+            Node targetNode = ballMovement.currentTemporaryNode;
 
             if (pathRenderer.IsMoveLegal(currentNode, targetNode))
-            //    if (pathRenderer.IsMoveLegal(lastNode, currentNode))
                 {
-             
-              //  pathRenderer.AddPosition(lastNode, currentNode, playerColor);
+
                 pathRenderer.AddPosition(currentNode, targetNode, playerColor);
-                lastNode = currentNode;  // Zaktualizuj globaln¹ zmienn¹ lastNode
+                lastConfirmedNode = targetNode;
                 isPlayerTurn = false;
                 Debug.Log("Koniec tury gracza!");
-                ballMovement.SetCurrentNode(currentNode);
+                ballMovement.SetConfirmedNode(currentNode);
                 PerformAITurn();
             }
             else
             {
-                // Jeœli ruch jest nielegalny, zresetuj pozycjê pi³ki do poprzedniego wêz³a
-             //   ballMovement.SetCurrentNode(lastNode);
-                ballMovement.SetCurrentNode(currentNode);
-                ballMovement.MoveBall();  // Zaktualizuj pozycjê pi³ki w œwiecie
+
+                ballMovement.ResetToLastConfirmedNode();
             }
         }
     }

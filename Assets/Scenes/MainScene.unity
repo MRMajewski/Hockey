@@ -1796,18 +1796,12 @@ MonoBehaviour:
   goalWidth: 2
   lastPosition: {x: 0, y: 0}
   targetPosition: {x: 0, y: 0}
-  pathRenderer: {fileID: 1648049777}
-  currentNode:
+  currentTemporaryNode:
     Position: {x: 0, y: 0}
     IsOccupied: 0
     Neighbors: []
     IsGoalNode: 0
-  targetNode:
-    Position: {x: 0, y: 0}
-    IsOccupied: 0
-    Neighbors: []
-    IsGoalNode: 0
-  lastNode:
+  confirmedNode:
     Position: {x: 0, y: 0}
     IsOccupied: 0
     Neighbors: []
@@ -1840,19 +1834,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 228bda4273e92334688c2f7feeba8bac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridManager: {fileID: 837017963}
   ballMovement: {fileID: 1648049774}
   turnManager: {fileID: 1648049775}
   pathRenderer: {fileID: 1648049777}
-  targetNode:
-    Position: {x: 0, y: 0}
-    IsOccupied: 0
-    Neighbors: []
-    IsGoalNode: 0
-  currentNode:
-    Position: {x: 0, y: 0}
-    IsOccupied: 0
-    Neighbors: []
-    IsGoalNode: 0
   goalNode:
     Position: {x: 0, y: 0}
     IsOccupied: 0

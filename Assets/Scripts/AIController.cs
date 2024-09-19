@@ -21,8 +21,7 @@ public class AIController : MonoBehaviour
 
     public void PerformAITurn()
     {
-        currentNode = ballMovement.GetCurrentNode();
-
+        currentNode = ballMovement.GetConfirmedNode();
 
         if (currentNode == null || goalNode == null)
         {
@@ -30,20 +29,19 @@ public class AIController : MonoBehaviour
             return;
         }
 
-        // Znajdź sąsiadów bieżącego węzła
         List<Node> neighbors = new List<Node>(currentNode.GetNeighbors());
 
         // Filtruj tylko te, które są dozwolone w kierunku celu
         Node bestNode = null;
         float shortestDistance = float.MaxValue;
-        bool foundLegalMove = false;  // Flaga do sprawdzenia, czy AI znalazło legalny ruch
+     //   bool foundLegalMove = false;  // Flaga do sprawdzenia, czy AI znalazło legalny ruch
 
         foreach (Node neighbor in neighbors)
         {
             // Sprawdź, czy przejście do sąsiada nie jest blokowane
             if (pathRenderer.IsMoveLegal(currentNode, neighbor))
             {
-                foundLegalMove = true;  // Zaznacz, że AI znalazło przynajmniej jeden legalny ruch
+              //  foundLegalMove = true;  // Zaznacz, że AI znalazło przynajmniej jeden legalny ruch
 
                 // Oblicz odległość od sąsiada do celu (goalNode)
                 float distance = Vector2.Distance(neighbor.Position, goalNode.Position);
@@ -70,22 +68,22 @@ public class AIController : MonoBehaviour
             Vector2 newPosition = currentNode.Position + direction.normalized * moveDistance;
 
             pathRenderer.AddPosition(currentNode, bestNode, Color.red);
-            bool moveSuccessful = ballMovement.TryMoveToNode(newPosition - ballMovement.GetCurrentNode().Position);
+            bool moveSuccessful = ballMovement.TryMoveToNode(newPosition - ballMovement.GetTargetNode().Position);
 
             if (moveSuccessful)
             {
-                ballMovement.MoveBall();
+            //    ballMovement.MoveBall();
                 Debug.Log($"AI Move: {ballMovement.ball.transform.position} to {newPosition}");
 
                 // Zaktualizuj bieżący węzeł
-                ballMovement.SetCurrentNode(bestNode);
+                ballMovement.SetConfirmedNode(bestNode);
             }
             else
             {
                 Debug.LogWarning("AI nie mogło wykonać ruchu.");
             }
         }
-        else if (!foundLegalMove)
+        else
         {
             // Jeśli nie znaleziono żadnych legalnych ruchów
             Debug.LogError("Brak dostępnych legalnych ruchów dla AI. AI czeka na następną turę.");

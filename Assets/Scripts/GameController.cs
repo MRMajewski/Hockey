@@ -114,8 +114,8 @@ public class GameController : MonoBehaviour
 
     public void ResetGame()
     {
-        ballMovement.lastPosition = Vector3.zero;
-        ballMovement.targetPosition = Vector3.zero;
+        //ballMovement.lastPosition = Vector3.zero;
+        //ballMovement.targetPosition = Vector3.zero;
         ball.transform.position = Vector3.zero;
         pathRenderer.ClearPaths();
         //

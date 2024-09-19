@@ -11,7 +11,7 @@ public class NodeDebuggerGizmos : MonoBehaviour
     {
         if (ballMovement != null)
         {
-            Node currentNode = ballMovement.GetCurrentNode();
+            Node currentNode = ballMovement.GetConfirmedNode();
             if (currentNode != null)
             {
                 // Ustaw kolor gizmo na zielony
