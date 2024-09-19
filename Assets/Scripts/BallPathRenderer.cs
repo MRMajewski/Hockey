@@ -24,11 +24,11 @@ public class BallPathRenderer : MonoBehaviour
     public bool IsMoveLegal(Node startNode, Node endNode)
     {
         // 1. Sprawdü, czy endNode jest sπsiadem startNode (ruch w osi x lub y)
-        if (!startNode.IsNeighbor(endNode))
-        {
-            Debug.Log("Ruch niedozwolony: endNode nie jest sπsiadem startNode.");
-            return false;
-        }
+        //if (!startNode.IsNeighbor(endNode))
+        //{
+        //    Debug.Log("Ruch niedozwolony: endNode nie jest sπsiadem startNode.");
+        //    return false;
+        //} juø to sprawdzamy w poprzednich
 
         // 2. Sprawdü, czy istnieje juø taka sama úcieøka w drawnPaths
         if (drawnPaths.Contains((startNode, endNode)) || drawnPaths.Contains((endNode, startNode)))

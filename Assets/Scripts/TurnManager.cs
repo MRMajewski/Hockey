@@ -45,20 +45,33 @@ public class TurnManager : MonoBehaviour
 
             Node currentNode = ballMovement.GetCurrentNode();  // Pobierz aktualny wêze³
 
-            if (pathRenderer.IsMoveLegal(lastNode, currentNode))
-            {
-                pathRenderer.AddPosition(lastNode, currentNode, playerColor);
+
+            Debug.Log("lastNode pos: "+ lastNode.Position);
+
+            Debug.Log("currentNode pos: " + currentNode.Position);
+
+            Node targetNode = ballMovement.GetTargetNode();
+        //    Node previousNode= ballMovement.GetNodeAtPosition((Vector2)ballMovement.ball.transform.position);
+
+       //     Debug.Log("previousNode pos: " + previousNode.Position);
+
+            if (pathRenderer.IsMoveLegal(currentNode, targetNode))
+            //    if (pathRenderer.IsMoveLegal(lastNode, currentNode))
+                {
+             
+              //  pathRenderer.AddPosition(lastNode, currentNode, playerColor);
+                pathRenderer.AddPosition(currentNode, targetNode, playerColor);
                 lastNode = currentNode;  // Zaktualizuj globaln¹ zmienn¹ lastNode
                 isPlayerTurn = false;
                 Debug.Log("Koniec tury gracza!");
-
+                ballMovement.SetCurrentNode(currentNode);
                 PerformAITurn();
             }
             else
             {
                 // Jeœli ruch jest nielegalny, zresetuj pozycjê pi³ki do poprzedniego wêz³a
-                ballMovement.SetCurrentNode(lastNode);
-
+             //   ballMovement.SetCurrentNode(lastNode);
+                ballMovement.SetCurrentNode(currentNode);
                 ballMovement.MoveBall();  // Zaktualizuj pozycjê pi³ki w œwiecie
             }
         }

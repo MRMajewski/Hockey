@@ -48,47 +48,47 @@ public class GameController : MonoBehaviour
     {
         return gridManager.GetAllNodes(); // Zak³adaj¹c, ¿e GridManager jest przypisany w GameController
     }
-    private void Update()
-    {
-        //   if (!isGameStarted || gameEnded)
-        //      return;
+    //private void Update()
+    //{
+    //    //   if (!isGameStarted || gameEnded)
+    //    //      return;
 
-        //if (CheckForWin())
-        //{
-        //    if (isPlayerTurn)
-        //    {
-        //        playerScore++;
-        //        infoText.text = "Player wins!";
-        //        Debug.Log("Player wins!");
-        //    }
-        //    else
-        //    {
-        //        aiScore++;
-        //        infoText.text = "AI wins!";
-        //        Debug.Log("AI wins!");
-        //    }
-        //    SaveScores();
-        //    gameEnded = true;
-        //    isGameStarted = false;
-        //    return;
-        //}
+    //    //if (CheckForWin())
+    //    //{
+    //    //    if (isPlayerTurn)
+    //    //    {
+    //    //        playerScore++;
+    //    //        infoText.text = "Player wins!";
+    //    //        Debug.Log("Player wins!");
+    //    //    }
+    //    //    else
+    //    //    {
+    //    //        aiScore++;
+    //    //        infoText.text = "AI wins!";
+    //    //        Debug.Log("AI wins!");
+    //    //    }
+    //    //    SaveScores();
+    //    //    gameEnded = true;
+    //    //    isGameStarted = false;
+    //    //    return;
+    //    //}
 
 
 
-        //if (isPlayerTurn)
-        //{
-        //    if (Input.GetButtonDown("Submit"))
-        //    {
-        //        Debug.Log("Dzia³a Enter");
-        //        EndTurn();
-        //    }
-        //}
-        //else
-        //{
-        //    aiController.PerformAITurn();
-        //    EndTurn();
-        //}
-    }
+    //    //if (isPlayerTurn)
+    //    //{
+    //    //    if (Input.GetButtonDown("Submit"))
+    //    //    {
+    //    //        Debug.Log("Dzia³a Enter");
+    //    //        EndTurn();
+    //    //    }
+    //    //}
+    //    //else
+    //    //{
+    //    //    aiController.PerformAITurn();
+    //    //    EndTurn();
+    //    //}
+    //}
 
     public void StartGame()
     {

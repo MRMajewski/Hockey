@@ -38,7 +38,7 @@ public class BallMovement : MonoBehaviour
     {
         if (!gameController.isGameStarted) return;
 
-        if (Input.anyKey)
+        if (Input.anyKeyDown)
         {
             if (HandleBallMovement()) // Sprawdzamy, czy udało się poruszyć
             {
@@ -49,27 +49,13 @@ public class BallMovement : MonoBehaviour
         }
     }
 
-    private Vector2 GetClosestNodePosition(Vector2 position)
-    {
-        Node closestNode = null;
-        float closestDistance = Mathf.Infinity;
-
-        foreach (var node in gridManager.GetAllNodes())
-        {
-            float distance = Vector2.Distance(position, node.Position);
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closestNode = node;
-            }
-        }
-
-        return closestNode != null ? closestNode.Position : position;
-    }
+  
 
     private bool HandleBallMovement()
     {
         bool didMove = false;
+
+        lastNode = currentNode;
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) // Ruch w górę
         {
@@ -116,9 +102,17 @@ public class BallMovement : MonoBehaviour
         float distanceMultiplier = isDiagonalMove ? Mathf.Sqrt(2) : 1f;
 
         // Oblicz nową pozycję z uwzględnieniem długości ruchu
-        Vector2 newPosition = currentNode.Position + direction * gridSize * distanceMultiplier;
+    //    Vector2 newPosition = currentNode.Position + direction * gridSize * distanceMultiplier;
+
+        Vector2 newPosition = currentNode.Position + direction * gridSize;
+        Debug.Log("new Position " + newPosition);
+
+        lastNode = currentNode;
+        Debug.Log("nlastNode " + lastNode);
 
         Node targetNode = gridManager.GetNodeAtPosition(newPosition);
+
+        Debug.Log("targetNode " + targetNode);
 
         // Sprawdzenie, czy docelowy węzeł jest sąsiadem
         if (currentNode.IsNeighbor(targetNode))
@@ -141,12 +135,19 @@ public class BallMovement : MonoBehaviour
             ball.transform.position = targetNode.Position;
 
             // Ustawiamy nowy aktualny węzeł
-            currentNode = targetNode;
+
+
+
+           // currentNode = targetNode;
+
+
+
             Debug.Log($"MoveBall: {currentNode.Position}"); // Debugowanie
         }
         else
         {
-            ball.transform.position = currentNode.Position;
+          //  ball.transform.position = currentNode.Position;
+            ball.transform.position = lastNode.Position;
             Debug.Log($"MoveBall (illegal): {currentNode.Position}"); // Debugowanie
         }
         isMoving = false;
@@ -154,10 +155,14 @@ public class BallMovement : MonoBehaviour
     }
 
 
+    public Node GetTargetNode()
+    {
+        return targetNode;
+    }
     public Node GetCurrentNode()
     {
-        Vector2 currentNodePosition = GetClosestNodePosition((Vector2)ball.transform.position);
-        currentNode = gridManager.GetNodeAtPosition(currentNodePosition);
+      //  Vector2 currentNodePosition = GetClosestNodePosition((Vector2)ball.transform.position);
+     //   currentNode = gridManager.GetNodeAtPosition(currentNodePosition);
         return currentNode;
     }
 
@@ -171,7 +176,23 @@ public class BallMovement : MonoBehaviour
     {
         return lastNode;
     }
+    private Vector2 GetClosestNodePosition(Vector2 position)
+    {
+        Node closestNode = null;
+        float closestDistance = Mathf.Infinity;
 
+        foreach (var node in gridManager.GetAllNodes())
+        {
+            float distance = Vector2.Distance(position, node.Position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestNode = node;
+            }
+        }
+
+        return closestNode != null ? closestNode.Position : position;
+    }
     public bool IsNeighborNode(Vector2 targetPosition)
     {
         Vector2 currentNodePosition = GetClosestNodePosition((Vector2)ball.transform.position);

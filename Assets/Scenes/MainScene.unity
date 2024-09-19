@@ -1753,6 +1753,7 @@ GameObject:
   - component: {fileID: 1648049776}
   - component: {fileID: 1648049777}
   - component: {fileID: 1648049778}
+  - component: {fileID: 1648049779}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -1793,10 +1794,15 @@ MonoBehaviour:
   gridSize: 1
   arenaSize: {x: 8, y: 10}
   goalWidth: 2
-  lastPosition: {x: 0, y: 0, z: 0}
-  targetPosition: {x: 0, y: 0, z: 0}
+  lastPosition: {x: 0, y: 0}
+  targetPosition: {x: 0, y: 0}
   pathRenderer: {fileID: 1648049777}
   currentNode:
+    Position: {x: 0, y: 0}
+    IsOccupied: 0
+    Neighbors: []
+    IsGoalNode: 0
+  targetNode:
     Position: {x: 0, y: 0}
     IsOccupied: 0
     Neighbors: []
@@ -1889,6 +1895,20 @@ MonoBehaviour:
   gameEnded: 0
   isGameStarted: 0
   gridManager: {fileID: 837017963}
+--- !u!114 &1648049779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1648049771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b1b98fd43b53b4cb0b65dca027621e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ballMovement: {fileID: 1648049774}
+  gizmoRadius: 0.5
 --- !u!1 &1652943334
 GameObject:
   m_ObjectHideFlags: 0
