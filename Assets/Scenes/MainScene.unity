@@ -1794,7 +1794,7 @@ MonoBehaviour:
   gridSize: 1
   arenaSize: {x: 8, y: 10}
   goalWidth: 2
-  pathRenderer: {fileID: 0}
+  pathRenderer: {fileID: 1648049777}
   currentTemporaryNode:
     Position: {x: 0, y: 0}
     IsOccupied: 0
@@ -1821,6 +1821,7 @@ MonoBehaviour:
   ballMovement: {fileID: 1648049774}
   pathRenderer: {fileID: 1648049777}
   aiController: {fileID: 1648049776}
+  gameController: {fileID: 1648049778}
   isPlayerTurn: 1
 --- !u!114 &1648049776
 MonoBehaviour:
@@ -1852,6 +1853,7 @@ MonoBehaviour:
     IsOccupied: 0
     Neighbors: []
     IsGoalNode: 0
+  gameController: {fileID: 1648049778}
 --- !u!114 &1648049777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2145,7 +2147,7 @@ Transform:
   m_GameObject: {fileID: 1944550970}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

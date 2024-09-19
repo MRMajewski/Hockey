@@ -48,47 +48,30 @@ public class GameController : MonoBehaviour
     {
         return gridManager.GetAllNodes(); // Zak³adaj¹c, ¿e GridManager jest przypisany w GameController
     }
-    //private void Update()
-    //{
-    //    //   if (!isGameStarted || gameEnded)
-    //    //      return;
 
-    //    //if (CheckForWin())
-    //    //{
-    //    //    if (isPlayerTurn)
-    //    //    {
-    //    //        playerScore++;
-    //    //        infoText.text = "Player wins!";
-    //    //        Debug.Log("Player wins!");
-    //    //    }
-    //    //    else
-    //    //    {
-    //    //        aiScore++;
-    //    //        infoText.text = "AI wins!";
-    //    //        Debug.Log("AI wins!");
-    //    //    }
-    //    //    SaveScores();
-    //    //    gameEnded = true;
-    //    //    isGameStarted = false;
-    //    //    return;
-    //    //}
-
-
-
-    //    //if (isPlayerTurn)
-    //    //{
-    //    //    if (Input.GetButtonDown("Submit"))
-    //    //    {
-    //    //        Debug.Log("Dzia³a Enter");
-    //    //        EndTurn();
-    //    //    }
-    //    //}
-    //    //else
-    //    //{
-    //    //    aiController.PerformAITurn();
-    //    //    EndTurn();
-    //    //}
-    //}
+    public void CheckIfGameEnded()
+    {
+        if (CheckForWin())
+        {
+            if (isPlayerTurn)
+            {
+                playerScore++;
+                infoText.text = "Player wins!";
+                Debug.Log("Player wins!");
+            }
+            else
+            {
+                aiScore++;
+                infoText.text = "AI wins!";
+                Debug.Log("AI wins!");
+            }
+            UpdateScoreUI();
+            SaveScores();
+            gameEnded = true;
+            isGameStarted = false;
+            return;
+        }
+    }
 
     public void StartGame()
     {
@@ -114,16 +97,8 @@ public class GameController : MonoBehaviour
 
     public void ResetGame()
     {
-        //ballMovement.lastPosition = Vector3.zero;
-        //ballMovement.targetPosition = Vector3.zero;
-        ball.transform.position = Vector3.zero;
         pathRenderer.ClearPaths();
-        //
-        //    aiController.ResetAI();
-        //   aiController.SetGoalNodeForAI();
-
-        //      LoadScores();
-        //     UpdateScoreUI();
+        ballMovement.BallInit();
     }
 
     public void ResetScores()
@@ -144,12 +119,12 @@ public class GameController : MonoBehaviour
 
     private bool CheckForWin()
     {
-        Vector3 ballPosition = ball.transform.position;
+        if (ballMovement.GetConfirmedNode().IsGoalNode)
 
-        bool onTopRow = Mathf.Abs(ballPosition.y - (ballMovement.arenaSize.y / 2f * ballMovement.gridSize)) < ballMovement.gridSize / 2;
-        bool onBottomRow = Mathf.Abs(ballPosition.y + (ballMovement.arenaSize.y / 2f * ballMovement.gridSize)) < ballMovement.gridSize / 2;
 
-        return onTopRow || onBottomRow;
+            return true;
+        else
+            return false;
     }
 
     private void LoadScores()

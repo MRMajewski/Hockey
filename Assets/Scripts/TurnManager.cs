@@ -6,18 +6,13 @@ public class TurnManager : MonoBehaviour
     public BallPathRenderer pathRenderer;
     public AIController aiController;
 
+    public GameController gameController;
+
     private Node lastConfirmedNode;
     private Color playerColor = Color.blue;
-    private Color aiColor = Color.red;
 
     public bool isPlayerTurn = true;
 
-    //void Start()
-    //{
-    //    // Ustaw pocz¹tkowy wêze³ na podstawie pozycji pi³ki
-    //    lastNode = ballMovement.GetCurrentNode();  // U¿ywamy metody do uzyskania aktualnego wêz³a
-    //    isPlayerTurn = true;
-    //}
 
     public void TurnManagerInit()
     {
@@ -34,26 +29,24 @@ public class TurnManager : MonoBehaviour
     {
         if (Input.GetButtonDown("Submit"))
         {
-            Debug.Log("Dzia³a Enter");
-            Debug.Log("currentTemporaryNode Position w HandlePlayer" + ballMovement.GetTargetNode().Position);
-            Debug.Log("currentTemporaryNode Position w HandlePlayer" + ballMovement.currentTemporaryNode.Position);
 
-            Node currentNode = ballMovement.GetConfirmedNode(); // Tymczasowy wêze³ pi³ki
-        //    Node targetNode = ballMovement.GetTargetNode(); // Ostateczny wêze³, który chcemy zatwierdziæ
-            Node targetNode = ballMovement.GetTargetNode();
+            Node currentNode = ballMovement.GetConfirmedNode(); ; // Tymczasowy wêze³ pi³ki
+            Node targetNode = ballMovement.GetTargetNode(); ;
 
-            if (pathRenderer.IsMoveLegal( currentNode, targetNode))
+            if (pathRenderer.IsMoveLegal(currentNode, targetNode))
                 {
                 pathRenderer.AddPosition(ref currentNode, ref targetNode, playerColor);
                 lastConfirmedNode = targetNode;
                 isPlayerTurn = false;
                 Debug.Log("Koniec tury gracza!");
                 ballMovement.SetConfirmedNode(ref lastConfirmedNode);
+
+                gameController.CheckIfGameEnded();
+
                 PerformAITurn();
             }
             else
             {
-
                 ballMovement.ResetToLastConfirmedNode();
             }
         }

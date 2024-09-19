@@ -16,6 +16,8 @@ public class AIController : MonoBehaviour
     [SerializeField]
     private Node goalNode;     // Cel AI, węzeł do którego AI zmierza
 
+    public GameController gameController;
+
     private const float DiagonalMoveDistance = 1.414f;  // √2 dla ruchu po skosie
     private const float StraightMoveDistance = 1f;  // Ruch po osi x/y
 
@@ -76,7 +78,7 @@ public class AIController : MonoBehaviour
                 Debug.Log($"AI Move: {ballMovement.ball.transform.position} to {newPosition}");
 
                 // Zaktualizuj bieżący węzeł
-                ballMovement.SetConfirmedNode( ref bestNode);
+                ballMovement.SetConfirmedNode(ref bestNode);
             }
             else
             {
@@ -88,7 +90,7 @@ public class AIController : MonoBehaviour
             // Jeśli nie znaleziono żadnych legalnych ruchów
             Debug.LogError("Brak dostępnych legalnych ruchów dla AI. AI czeka na następną turę.");
         }
-
+        gameController.CheckIfGameEnded();
         // Zakończ turę AI i ustaw, że jest tura gracza
         turnManager.isPlayerTurn = true;
     }

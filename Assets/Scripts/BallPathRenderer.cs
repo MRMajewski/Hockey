@@ -12,26 +12,17 @@ public class BallPathRenderer : MonoBehaviour
     [SerializeField]
     private Transform pathsPrefabParent;
 
-    public void AddPosition(ref Node fromNode, ref Node  toNode, Color color)
+    public void AddPosition( ref Node fromNode, ref Node  toNode, Color color)
     {
      //   if (IsMoveLegal(fromNode, toNode))
         {
             CreateLineSegment(fromNode, toNode, color);
             MarkConnectionAsUsed(fromNode, toNode);
         }
-     //   else
-      //  {
-      //      Debug.Log("Ruch nielegalny: Przeciêcie œcie¿ki.");
-      //  }
     }
     public bool IsMoveLegal(Node startNode, Node endNode)
     {
-        // 1. SprawdŸ, czy endNode jest s¹siadem startNode (ruch w osi x lub y)
-        //if (!startNode.IsNeighbor(endNode))
-        //{
-        //    Debug.Log("Ruch niedozwolony: endNode nie jest s¹siadem startNode.");
-        //    return false;
-        //} ju¿ to sprawdzamy w poprzednich
+
 
         // 2. SprawdŸ, czy istnieje ju¿ taka sama œcie¿ka w drawnPaths
         if (drawnPaths.Contains((startNode, endNode)) || drawnPaths.Contains((endNode, startNode)))
@@ -133,12 +124,6 @@ public class BallPathRenderer : MonoBehaviour
         return isOnSegment;
     }
 
-    //private bool IsPointOnSegment(Vector2 point, Vector2 segmentStart, Vector2 segmentEnd)
-    //{
-    //    // SprawdŸ, czy punkt jest wzd³u¿ odcinka
-    //    return (Mathf.Min(segmentStart.x, segmentEnd.x) <= point.x && point.x <= Mathf.Max(segmentStart.x, segmentEnd.x)) &&
-    //           (Mathf.Min(segmentStart.y, segmentEnd.y) <= point.y && point.y <= Mathf.Max(segmentStart.y, segmentEnd.y));
-    //}
 
     private bool DoesPathContainUsedNode(Node startNode, Node endNode)
     {
@@ -160,7 +145,7 @@ public class BallPathRenderer : MonoBehaviour
 
         GameObject segment = Instantiate(lineSegmentPrefab, pathsPrefabParent);
         Vector2 midPoint = (from + to) / 2;
-        segment.transform.position = midPoint;
+        segment.transform.localPosition = new Vector3(midPoint.x,midPoint.y,0);
 
         float distance = Vector3.Distance(from, to);
         segment.transform.localScale = new Vector3(distance, .2f, 1);
@@ -178,54 +163,11 @@ public class BallPathRenderer : MonoBehaviour
         drawnPaths.Add((toNode, fromNode)); // Dodajemy równie¿ w odwrotnej kolejnoœci
     }
 
-
-
-    //private void CreateLineSegment(Node fromNode, Node toNode, Color color)
-    //{
-    //    Vector3 from = fromNode.Position;
-    //    Vector3 to = toNode.Position;
-
-    //    GameObject segment = Instantiate(lineSegmentPrefab, transform);
-    //    Vector3 midPoint = (from + to) / 2;
-    //    segment.transform.position = midPoint;
-
-    //    float distance = Vector3.Distance(from, to);
-    //    segment.transform.localScale = new Vector3(distance, .2f, 1);
-
-    //    float angle = Mathf.Atan2(to.y - from.y, to.x - from.x) * Mathf.Rad2Deg;
-    //    segment.transform.rotation = Quaternion.Euler(0, 0, angle);
-
-    //    var spriteRenderer = segment.GetComponent<SpriteRenderer>();
-    //    if (spriteRenderer != null)
-    //    {
-    //        spriteRenderer.color = color;
-    //    }
-
-    //    drawnPaths.Add((fromNode, toNode));
-    //    drawnPaths.Add((toNode, fromNode)); // Dodajemy równie¿ w odwrotnej kolejnoœci
-    //}
-
-    private bool DoesLineIntersect(Node startNode, Node endNode)
-    {
-        // ZnajdŸ wspólne s¹siedztwo, ¿eby sprawdziæ przeciêcia
-        var commonNeighbors = startNode.Neighbors.Intersect(endNode.Neighbors).ToList();
-
-        foreach (var neighbor in commonNeighbors)
-        {
-            if (drawnPaths.Contains((neighbor, startNode)) || drawnPaths.Contains((startNode, neighbor)) ||
-                drawnPaths.Contains((neighbor, endNode)) || drawnPaths.Contains((endNode, neighbor)))
-            {
-                return true; // Znaleziono przeciêcie
-            }
-        }
-        return false;
-    }
-
     public void ClearPaths()
     {
-        foreach (Transform child in transform)
+        foreach (Transform child in pathsPrefabParent)
         {
-            GameObject.Destroy(child.gameObject);
+            Destroy(child.gameObject);
         }
         drawnPaths.Clear();
         drawnPaths.TrimExcess();

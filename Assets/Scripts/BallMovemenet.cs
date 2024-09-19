@@ -6,40 +6,37 @@ public class BallMovement : MonoBehaviour
     [SerializeField]
     private GameController gameController;
     [SerializeField]
-    private GridManager gridManager;  // Referencja do GridManager
+    private GridManager gridManager;
     public GameObject ball;
     public float gridSize = 1f;
     public Vector2Int arenaSize = new Vector2Int(8, 10);
     public int goalWidth = 2;
-    //[SerializeField]
-    //public Vector2 lastPosition;
-    //[SerializeField]
-    //public Vector2 targetPosition;
     private bool isMoving = false;
 
     [SerializeField]
     private BallPathRenderer pathRenderer;
 
+    private Node currentTemporaryNode;
+    private Node confirmedNode;
 
-    public Node currentTemporaryNode; // Węzeł tymczasowy, podczas ruchu
-    public Node confirmedNode; // Ostateczny węzeł po zatwierdzeniu ruchu
+    //public Node CurrentNode
+    //{
+    //    get { return currentTemporaryNode; }
+    //    set { currentTemporaryNode = value; }
+    //}
 
+    //public Node ConfirmedNode
+    //{
+    //    get { return confirmedNode; }
+    //    set { confirmedNode = value; }
+    //}
 
     public Vector2 temporaryBallPos = Vector2.zero;
-    //[SerializeField]
-    //private Node currentNode;
-    //[SerializeField]
-    //private Node targetNode;
-    //[SerializeField]
-    //private Node lastNode;
 
     public void BallInit()
     {
-        confirmedNode = gridManager.GetNodeAtPosition(Vector2.zero); // Początkowy węzeł piłki
+        confirmedNode = gridManager.GetNodeAtPosition(Vector2.zero);
         currentTemporaryNode = confirmedNode;
-        //currentNode = gridManager.GetNodeAtPosition(ball.transform.position);
-        //targetPosition = currentNode.Position;
-        //lastNode = currentNode;
     }
 
     private void Update()
@@ -49,53 +46,46 @@ public class BallMovement : MonoBehaviour
         if (Input.anyKeyDown)
         {
             HandleBallMovement();
-            Debug.Log("currentTemporaryNode Position Przed MoveBall" + currentTemporaryNode.Position);
-            MoveBall();
-            Debug.Log("currentTemporaryNode Position Po MoveBall" + currentTemporaryNode.Position);
-
-
+            ball.transform.position = currentTemporaryNode.Position;
         }
     }
-
-  
 
     private bool HandleBallMovement()
     {
         bool didMove = false;
 
         currentTemporaryNode = confirmedNode;
-        //  lastNode = currentNode;
         Vector2 direction = Vector2.zero;
 
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) // Ruch w górę
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             direction = Vector2.up;
         }
-        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) // Ruch w dół
+        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             direction = Vector2.down;
         }
-        else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) // Ruch w lewo
+        else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             direction = Vector2.left;
         }
-        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) // Ruch w prawo
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
-            direction =Vector2.right;
+            direction = Vector2.right;
         }
-        else if (Input.GetKeyDown(KeyCode.Q)) // Ruch po skosie w lewo-górę
+        else if (Input.GetKeyDown(KeyCode.Q))
         {
             direction = new Vector2(-1, 1);
         }
-        else if (Input.GetKeyDown(KeyCode.E)) // Ruch po skosie w prawo-górę
+        else if (Input.GetKeyDown(KeyCode.E))
         {
             direction = new Vector2(1, 1);
         }
-        else if (Input.GetKeyDown(KeyCode.Z)) // Ruch po skosie w lewo-dół
+        else if (Input.GetKeyDown(KeyCode.Z))
         {
             direction = new Vector2(-1, -1);
         }
-        else if (Input.GetKeyDown(KeyCode.C)) // Ruch po skosie w prawo-dół
+        else if (Input.GetKeyDown(KeyCode.C))
         {
             direction = new Vector2(1, -1);
         }
@@ -105,7 +95,7 @@ public class BallMovement : MonoBehaviour
             didMove = TryMoveToNode(direction);
         }
 
-        return didMove; // Zwracamy, czy ruch się udał
+        return didMove;
     }
 
     public bool TryMoveToNode(Vector2 direction)
@@ -117,50 +107,39 @@ public class BallMovement : MonoBehaviour
         Vector2 newPosition = confirmedNode.Position + direction * gridSize;
         Node targetNode = gridManager.GetNodeAtPosition(newPosition);
 
-        Debug.Log("currentTemporaryNode Position" + currentTemporaryNode.Position);
         temporaryBallPos = newPosition;
-        // Sprawdzenie, czy docelowy węzeł jest sąsiadem
+
         if (confirmedNode.IsNeighbor(targetNode))
         {
-            Debug.Log("currentTemporaryNode Position" + currentTemporaryNode.Position);
             currentTemporaryNode = targetNode;
-            Debug.Log("currentTemporaryNode Position" + currentTemporaryNode.Position);
-
             isMoving = true;
-            return true; // Ruch udany
+            return true;
         }
         else
         {
-            Debug.Log("Invalid move: Not a neighbor node.");
-            return false; // Ruch nieudany
+            return false;
         }
     }
-    public void MoveBall(bool isMoveLegal = true)
-    {
-        ball.transform.position = currentTemporaryNode.Position;
-        Debug.Log("currentTemporaryNode Position w MoveBall" + currentTemporaryNode.Position);
 
-    }
-    public void SetConfirmedNode(ref Node node)
+    public void SetConfirmedNode( ref Node node)
     {
         confirmedNode = node;
-        ball.transform.position = node.Position; // Ustawiamy piłkę w ostatecznym węźle
-        currentTemporaryNode = node; // Synchronizujemy tymczasowy węzeł z zatwierdzonym
+        ball.transform.position = node.Position;
+        currentTemporaryNode = node;
     }
 
     public void ResetToLastConfirmedNode()
     {
         ball.transform.position = confirmedNode.Position;
-        currentTemporaryNode = confirmedNode; // Resetujemy tymczasową pozycję do zatwierdzonej
+        currentTemporaryNode = confirmedNode;
     }
-
 
     public ref Node GetTargetNode()
     {
         currentTemporaryNode = gridManager.GetNodeAtPosition(temporaryBallPos);
-        Debug.Log("GetTargetNode() " + currentTemporaryNode);
-        return  ref currentTemporaryNode;
+        return ref currentTemporaryNode;
     }
+
     public ref Node GetConfirmedNode()
     {
         return ref confirmedNode;
@@ -183,6 +162,7 @@ public class BallMovement : MonoBehaviour
 
         return closestNode != null ? closestNode.Position : position;
     }
+
     public bool IsNeighborNode(Vector2 targetPosition)
     {
         Vector2 currentNodePosition = GetClosestNodePosition((Vector2)ball.transform.position);
@@ -219,7 +199,4 @@ public class BallMovement : MonoBehaviour
         }
         return closestNode;
     }
-
-
-
 }
