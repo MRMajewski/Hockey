@@ -45,6 +45,21 @@ public class Node
     {
         return Neighbors;
     }
+
+    // Nadpisanie Equals i GetHashCode
+    public override bool Equals(object obj)
+    {
+        if (obj is Node otherNode)
+        {
+            return Position == otherNode.Position;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Position.GetHashCode();
+    }
 }
 
 public class GridManager : MonoBehaviour

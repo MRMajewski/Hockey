@@ -76,7 +76,7 @@ public class AIController : MonoBehaviour
                 Debug.Log($"AI Move: {ballMovement.ball.transform.position} to {newPosition}");
 
                 // Zaktualizuj bieżący węzeł
-                ballMovement.SetConfirmedNode(bestNode);
+                ballMovement.SetConfirmedNode( ref bestNode);
             }
             else
             {

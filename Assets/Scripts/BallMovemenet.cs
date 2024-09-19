@@ -141,7 +141,7 @@ public class BallMovement : MonoBehaviour
         Debug.Log("currentTemporaryNode Position w MoveBall" + currentTemporaryNode.Position);
 
     }
-    public void SetConfirmedNode(Node node)
+    public void SetConfirmedNode(ref Node node)
     {
         confirmedNode = node;
         ball.transform.position = node.Position; // Ustawiamy piłkę w ostatecznym węźle
@@ -155,15 +155,15 @@ public class BallMovement : MonoBehaviour
     }
 
 
-    public Node GetTargetNode()
+    public ref Node GetTargetNode()
     {
         currentTemporaryNode = gridManager.GetNodeAtPosition(temporaryBallPos);
         Debug.Log("GetTargetNode() " + currentTemporaryNode);
-        return currentTemporaryNode;
+        return  ref currentTemporaryNode;
     }
-    public Node GetConfirmedNode()
+    public ref Node GetConfirmedNode()
     {
-        return confirmedNode;
+        return ref confirmedNode;
     }
 
     private Vector2 GetClosestNodePosition(Vector2 position)

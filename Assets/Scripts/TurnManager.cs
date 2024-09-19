@@ -49,7 +49,7 @@ public class TurnManager : MonoBehaviour
                 lastConfirmedNode = targetNode;
                 isPlayerTurn = false;
                 Debug.Log("Koniec tury gracza!");
-                ballMovement.SetConfirmedNode(currentNode);
+                ballMovement.SetConfirmedNode(ref lastConfirmedNode);
                 PerformAITurn();
             }
             else
