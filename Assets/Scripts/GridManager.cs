@@ -198,11 +198,22 @@ public class GridManager : MonoBehaviour
     {
         return nodes.IndexOf(node);  // Zwraca indeks node'a w liœcie nodes
     }
-    internal Node GetNodeAtPosition(Vector3 position)
+    //internal Node GetNodeAtPosition(Vector3 position)
+    //{
+    //    foreach (var node in nodes)
+    //    {
+    //        if (Vector3.Distance(position, new Vector3(node.Position.x, node.Position.y, position.z)) < nodeSpacing * 0.5f)
+    //        {
+    //            return node;
+    //        }
+    //    }
+    //    return null;
+    //}
+    internal Node GetNodeAtPosition(Vector2 position)
     {
         foreach (var node in nodes)
         {
-            if (Vector3.Distance(position, new Vector3(node.Position.x, node.Position.y, position.z)) < nodeSpacing * 0.5f)
+            if (Vector2.Distance(position, new Vector2(node.Position.x, node.Position.y)) < nodeSpacing * 0.5f)
             {
                 return node;
             }

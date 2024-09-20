@@ -20,6 +20,16 @@ public class NodeDebuggerGizmos : MonoBehaviour
                 // Rysuj sferê gizmo na pozycji aktualnego wêz³a
                 Gizmos.DrawSphere(currentNode.Position, gizmoRadius);
             }
+
+            Node tempNode = ballMovement.GetTargetNode();
+            if (tempNode != null)
+            {
+                // Ustaw kolor gizmo na zielony
+                Gizmos.color = Color.blue;
+
+                // Rysuj sferê gizmo na pozycji aktualnego wêz³a
+                Gizmos.DrawSphere(tempNode.Position, gizmoRadius/2);
+            }
         }
     }
 }

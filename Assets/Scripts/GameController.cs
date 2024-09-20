@@ -79,7 +79,7 @@ public class GameController : MonoBehaviour
         //       return;
 
         isGameStarted = true;
-        ResetGame();
+        pathRenderer.ClearPaths();
         Debug.Log(" arenaGenerator.GenerateArena()");
         arenaGenerator.GenerateArena();
         Debug.Log("  aiController.SetGoalNodeForAI();");
