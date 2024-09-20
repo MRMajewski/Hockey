@@ -6,14 +6,12 @@ using System;
 public class Node
 {
     private Vector2 position;
-    private bool isOccupied;
-    private List<Node> neighbors; // Zmieniamy List<int> na List<Node>
+    private List<Node> neighbors; 
     private bool isGoalNode;
-
 
     public Vector2 Position { get => position; set => position = value; }
     public bool IsOccupied;
-    public List<Node> Neighbors { get => neighbors; set => neighbors = value; }  // Zmieniamy List<int> na List<Node>
+    public List<Node> Neighbors { get => neighbors; set => neighbors = value; }  
     public bool IsGoalNode { get => isGoalNode; set => isGoalNode=value; }
 
     public Node(Vector2 position, bool isGoal = false)
@@ -27,7 +25,7 @@ public class Node
     // Sprawdzanie, czy dany wêze³ jest s¹siadem
     public bool IsNeighbor(Node node)
     {
-        return Neighbors.Contains(node); // Sprawdza, czy podany wêze³ jest na liœcie s¹siadów
+        return Neighbors.Contains(node); 
     }
 
     public void AddNeighbor(Node neighbor)
@@ -39,13 +37,13 @@ public class Node
     }
 
     // Metoda do usuwania s¹siada
-    public void RemoveNeighbor(Node neighbor)
-    {
-        if (Neighbors.Contains(neighbor))
-        {
-            Neighbors.Remove(neighbor);
-        }
-    }
+    //public void RemoveNeighbor(Node neighbor)
+    //{
+    //    if (Neighbors.Contains(neighbor))
+    //    {
+    //        Neighbors.Remove(neighbor);
+    //    }
+    //}
 
     public List<Node> GetNeighbors()
     {
@@ -53,19 +51,19 @@ public class Node
     }
 
     // Nadpisanie Equals i GetHashCode
-    public override bool Equals(object obj)
-    {
-        if (obj is Node otherNode)
-        {
-            return Position == otherNode.Position;
-        }
-        return false;
-    }
+    //public override bool Equals(object obj)
+    //{
+    //    if (obj is Node otherNode)
+    //    {
+    //        return Position == otherNode.Position;
+    //    }
+    //    return false;
+    //}
 
-    public override int GetHashCode()
-    {
-        return Position.GetHashCode();
-    }
+    //public override int GetHashCode()
+    //{
+    //    return Position.GetHashCode();
+    //}
 }
 
 public class GridManager : MonoBehaviour
@@ -78,6 +76,8 @@ public class GridManager : MonoBehaviour
     [SerializeField]
     private List<Node> goalNodes = new List<Node>();
 
+    //private Node topGoal;
+    //private Node bottomGoal;
     public void GenerateNodes(int gridWidth, int gridHeight, int goalWidth = 2)
     {
         offset = new Vector2(gridWidth / -2f, gridHeight / -2f);

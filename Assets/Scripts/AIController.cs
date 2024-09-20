@@ -3,9 +3,12 @@ using UnityEngine;
 
 public class AIController : MonoBehaviour
 {
-    public BallMovement ballMovement;
-    public TurnManager turnManager;
-
+    [SerializeField]
+    private BallMovement ballMovement;
+    [SerializeField]
+    private TurnManager turnManager;
+    [SerializeField]
+    private GameController gameController;
     [SerializeField]
     private BallPathRenderer pathRenderer;
 
@@ -17,16 +20,14 @@ public class AIController : MonoBehaviour
     [SerializeField]
     private Node goalNode;     // Cel AI, węzeł do którego AI zmierza
 
-    public GameController gameController;
+    public Node GoalNode { get => goalNode; }
 
     private const float DiagonalMoveDistance = 1.414f;  // √2 dla ruchu po skosie
     private const float StraightMoveDistance = 1f;  // Ruch po osi x/y
 
     public void PerformAITurn()
     {
-        Debug.Log("Perform AI TURN currentNode: "+ currentNode.Position);
         currentNode = ballMovement.GetConfirmedNode();
-        Debug.Log("Perform AI TURN currentNode: " + currentNode.Position);
 
         if (currentNode == null || goalNode == null)
         {
@@ -98,7 +99,7 @@ public class AIController : MonoBehaviour
         turnManager.IsPlayerTurn = false;
         gameController.CheckIfGameEnded(ref bestNode);
         // Zakończ turę AI i ustaw, że jest tura gracza
-        turnManager.IsPlayerTurn = true;
+    //    turnManager.IsPlayerTurn = true;
     }
 
     // Ustawia cel AI, czyli węzeł bramki przeciwnika

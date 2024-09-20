@@ -32,8 +32,8 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI infoText;
 
-    [Header("bool references")]
-    private bool isPlayerTurn = true;
+    //[Header("bool references")]
+    //private bool isPlayerTurn = true;
     [SerializeField]
     private bool gameEnded = false;
     public bool isGameStarted = false;
@@ -57,7 +57,7 @@ public class GameController : MonoBehaviour
     {
         if (CheckForWin(ref nodeUnderChecking))
         {
-            if (isPlayerTurn)
+            if (turnManager.IsPlayerTurn)
             {
                 playerScore++;
                 infoText.text = "Player wins!";
@@ -84,15 +84,11 @@ public class GameController : MonoBehaviour
 
         isGameStarted = true;
         pathRenderer.ClearPaths();
-        Debug.Log(" arenaGenerator.GenerateArena()");
         arenaGenerator.GenerateArena();
-        Debug.Log("   ballMovement.BallInit(); ");
         ballMovement.BallInit();
-        Debug.Log("    aiController.SetGoalNodeForAI(); ");
         aiController.SetGoalNodeForAI();
-        Debug.Log("      turnManager.TurnManagerInit(); ");
         turnManager.TurnManagerInit();
-        isPlayerTurn = true;
+        turnManager.IsPlayerTurn = true;
         gameEnded = false;
       
         Debug.Log("Game Started");
@@ -114,21 +110,15 @@ public class GameController : MonoBehaviour
         UpdateScoreUI();
     }
 
-    private void EndTurn()
-    {
-        isPlayerTurn = !isPlayerTurn;
-        Debug.Log(isPlayerTurn ? "Player's turn" : "AI's turn");
-    }
+    //private void EndTurn()
+    //{
+    //    turnManager.IsPlayerTurn = !turnManager.IsPlayerTurn;
+    //    Debug.Log(turnManager.IsPlayerTurn ? "Player's turn" : "AI's turn");
+    //}
 
     private bool CheckForWin(ref Node nodeUnderChecking)
     {
-     //   if ((nodeUnderChecking.Position == new Vector2(0, -5f)))
-     //       Debug.Log("TEST");
-    //   Node testNode= gridManager.GetNodeAtPosition(nodeUnderChecking.Position);
-
-        //  if(nodeUnderChecking.IsGoalNode)
-        //  if (ballMovement.GetConfirmedNode().IsGoalNode)
-        if ((nodeUnderChecking.Position == new Vector2(0, -5f)))
+        if ((nodeUnderChecking.Position == aiController.GoalNode.Position))
             return true;
         else
             return false;

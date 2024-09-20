@@ -38,10 +38,8 @@ public class ArenaGenerator : MonoBehaviour
             return;
         }
 
-        Debug.Log("Clearing arena...");
         ClearArena();
 
-        Debug.Log("Generating grid...");
         Vector3 basePosition = new Vector3(-width * cellSize / 2 + offset.x, -height * cellSize / 2 + offset.y, 0);
 
         for (int x = 0; x < width; x++)
@@ -53,13 +51,9 @@ public class ArenaGenerator : MonoBehaviour
             }
         }
 
-        Debug.Log("Adding goals...");
         AddGoals();
 
-        Debug.Log("Generating nodes...");
         gridManager.GenerateNodes(width, height);
-
-        Debug.Log("Arena generated.");
     }
 
     void AddGoals()
@@ -69,7 +63,6 @@ public class ArenaGenerator : MonoBehaviour
             Debug.LogError("Goal prefab is not assigned!");
             return;
         }
-
         float halfWidth = width * cellSize / 2;
         float halfHeight = height * cellSize / 2;
 

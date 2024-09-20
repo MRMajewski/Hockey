@@ -45,12 +45,12 @@ public class TurnManager : MonoBehaviour
                 {
                 pathRenderer.AddPosition(ref currentNode, ref targetNode, playerColor);
                 lastConfirmedNode = targetNode;
-                isPlayerTurn = false;
+            
                 Debug.Log("Koniec tury gracza!");
                 ballMovement.SetConfirmedNode(ref lastConfirmedNode);
-                isPlayerTurn = false;
+            //    IsPlayerTurn = false;
                 gameController.CheckIfGameEnded(ref lastConfirmedNode);
-
+                IsPlayerTurn = false;
                 PerformAITurn();
             }
             else
