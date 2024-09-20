@@ -32,12 +32,9 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI infoText;
 
-    //[Header("bool references")]
-    //private bool isPlayerTurn = true;
     [SerializeField]
     private bool gameEnded = false;
     public bool isGameStarted = false;
-
     private int playerScore = 0;
     private int aiScore = 0;
 

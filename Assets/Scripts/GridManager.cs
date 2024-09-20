@@ -36,34 +36,10 @@ public class Node
         }
     }
 
-    // Metoda do usuwania s¹siada
-    //public void RemoveNeighbor(Node neighbor)
-    //{
-    //    if (Neighbors.Contains(neighbor))
-    //    {
-    //        Neighbors.Remove(neighbor);
-    //    }
-    //}
-
     public List<Node> GetNeighbors()
     {
         return Neighbors;
     }
-
-    // Nadpisanie Equals i GetHashCode
-    //public override bool Equals(object obj)
-    //{
-    //    if (obj is Node otherNode)
-    //    {
-    //        return Position == otherNode.Position;
-    //    }
-    //    return false;
-    //}
-
-    //public override int GetHashCode()
-    //{
-    //    return Position.GetHashCode();
-    //}
 }
 
 public class GridManager : MonoBehaviour
@@ -95,7 +71,6 @@ public class GridManager : MonoBehaviour
                 nodes.Add(newNode);
             }
         }
-
         Vector2 topGoalCenter = new Vector2(gridWidth / 2 * nodeSpacing + offset.x, nodeSpacing - offset.y);
         Vector2 bottomGoalCenter = new Vector2(gridWidth / 2 * nodeSpacing + offset.x, -nodeSpacing + offset.y);
 

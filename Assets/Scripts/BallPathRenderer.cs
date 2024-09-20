@@ -12,37 +12,34 @@ public class BallPathRenderer : MonoBehaviour
     [SerializeField]
     private Transform pathsPrefabParent;
 
-    public void AddPosition( ref Node fromNode, ref Node  toNode, Color color)
+    public void AddPosition(ref Node fromNode, ref Node toNode, Color color)
     {
-     //   if (IsMoveLegal(fromNode, toNode))
-        {
-            CreateLineSegment(fromNode, toNode, color);
-            MarkConnectionAsUsed(fromNode, toNode);
-        }
+        CreateLineSegment(fromNode, toNode, color);
+        MarkConnectionAsUsed(fromNode, toNode);
     }
     public bool IsMoveLegal(Node startNode, Node endNode)
     {
-        if(startNode.Position.Equals(endNode.Position))
+        if (startNode.Position.Equals(endNode.Position))
         {
-         //   Debug.Log("Ruch niedozwolony:Nie wykonano ruchu");
+            //   Debug.Log("Ruch niedozwolony:Nie wykonano ruchu");
             return false;
         }
 
         // 2. SprawdŸ, czy istnieje ju¿ taka sama œcie¿ka w drawnPaths
         if (drawnPaths.Contains((startNode, endNode)) || drawnPaths.Contains((endNode, startNode)))
         {
-         //   Debug.Log("Ruch niedozwolony: Istnieje ju¿ po³¹czenie miêdzy startNode a endNode.");
+            //   Debug.Log("Ruch niedozwolony: Istnieje ju¿ po³¹czenie miêdzy startNode a endNode.");
             return false;
         }
 
         // 3. SprawdŸ, czy skosowy ruch przecina istniej¹ce œcie¿ki w drawnPaths
         if (DoesDiagonalMoveIntersect(startNode, endNode))
         {
-        //    Debug.Log("Ruch niedozwolony: Skosowy ruch przecina istniej¹c¹ œcie¿kê.");
+            //    Debug.Log("Ruch niedozwolony: Skosowy ruch przecina istniej¹c¹ œcie¿kê.");
             return false;
         }
 
-     //   Debug.Log($"Ruch legalny {startNode.Position} =>{endNode.Position}");
+        //   Debug.Log($"Ruch legalny {startNode.Position} =>{endNode.Position}");
         return true;
     }
 
@@ -128,20 +125,6 @@ public class BallPathRenderer : MonoBehaviour
         return isOnSegment;
     }
 
-
-    private bool DoesPathContainUsedNode(Node startNode, Node endNode)
-    {
-        foreach (var path in drawnPaths)
-        {
-            if (path.Item1 == startNode || path.Item2 == startNode ||
-                path.Item1 == endNode || path.Item2 == endNode)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void CreateLineSegment(Node fromNode, Node toNode, Color color)
     {
         Vector2 from = fromNode.Position;
@@ -149,7 +132,7 @@ public class BallPathRenderer : MonoBehaviour
 
         GameObject segment = Instantiate(lineSegmentPrefab, pathsPrefabParent);
         Vector2 midPoint = (from + to) / 2;
-        segment.transform.localPosition = new Vector3(midPoint.x,midPoint.y,0);
+        segment.transform.localPosition = new Vector3(midPoint.x, midPoint.y, 0);
 
         float distance = Vector3.Distance(from, to);
         segment.transform.localScale = new Vector3(distance, .2f, 1);

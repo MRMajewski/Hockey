@@ -21,11 +21,7 @@ public class TurnManager : MonoBehaviour
 
     public void TurnManagerInit()
     {
-      //  Debug.Log(lastConfirmedNode.Position + " TurnManagerInit lastConfirmedNode");
-
-        lastConfirmedNode = ballMovement.GetConfirmedNode(); // Ustawiamy pierwszy zatwierdzony wêze³
-
-        Debug.Log(lastConfirmedNode.Position + " TurnManagerInit lastConfirmedNode");
+        lastConfirmedNode = ballMovement.GetConfirmedNode(); 
         isPlayerTurn = true;
     }
     void Update()
@@ -48,7 +44,6 @@ public class TurnManager : MonoBehaviour
             
                 Debug.Log("Koniec tury gracza!");
                 ballMovement.SetConfirmedNode(ref lastConfirmedNode);
-            //    IsPlayerTurn = false;
                 gameController.CheckIfGameEnded(ref lastConfirmedNode);
                 IsPlayerTurn = false;
                 PerformAITurn();
@@ -68,7 +63,6 @@ public class TurnManager : MonoBehaviour
 
             Debug.Log("Koniec tury AI!");
         }
-
-        isPlayerTurn = true;
+        IsPlayerTurn = true;
     }
 }

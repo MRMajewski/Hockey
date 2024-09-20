@@ -37,23 +37,16 @@ public class AIController : MonoBehaviour
 
         List<Node> neighbors = new List<Node>(currentNode.GetNeighbors());
 
-        // Filtruj tylko te, które są dozwolone w kierunku celu
         Node bestNode = null;
         float shortestDistance = float.MaxValue;
-     //   bool foundLegalMove = false;  // Flaga do sprawdzenia, czy AI znalazło legalny ruch
 
         foreach (Node neighbor in neighbors)
         {
             // Sprawdź, czy przejście do sąsiada nie jest blokowane
             if (pathRenderer.IsMoveLegal(currentNode, neighbor))
             {
-              //  foundLegalMove = true;  // Zaznacz, że AI znalazło przynajmniej jeden legalny ruch
 
-                // Oblicz odległość od sąsiada do celu (goalNode)
                 float distance = Vector2.Distance(neighbor.Position, goalNode.Position);
-
-                //na razie wyłączam
-             //   Debug.Log($"Sprawdzanie węzła sąsiada: {neighbor.Position}, odległość: {distance}");
 
                 // Znajdź najlepszego sąsiada (o najkrótszej odległości do celu)
                 if (distance < shortestDistance)
@@ -80,10 +73,7 @@ public class AIController : MonoBehaviour
 
             if (moveSuccessful)
             {
-            //    ballMovement.MoveBall();
                 Debug.Log($"AI Move: {ballMovement.ball.transform.position} to {newPosition}");
-
-                // Zaktualizuj bieżący węzeł
                 ballMovement.SetConfirmedNode(ref bestNode);
             }
             else
@@ -98,8 +88,6 @@ public class AIController : MonoBehaviour
         }
         turnManager.IsPlayerTurn = false;
         gameController.CheckIfGameEnded(ref bestNode);
-        // Zakończ turę AI i ustaw, że jest tura gracza
-    //    turnManager.IsPlayerTurn = true;
     }
 
     // Ustawia cel AI, czyli węzeł bramki przeciwnika

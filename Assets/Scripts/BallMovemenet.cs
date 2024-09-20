@@ -11,7 +11,6 @@ public class BallMovement : MonoBehaviour
     public float gridSize = 1f;
     public Vector2Int arenaSize = new Vector2Int(8, 10);
     public int goalWidth = 2;
-    private bool isMoving = false;
 
     [SerializeField]
     private BallPathRenderer pathRenderer;
@@ -37,7 +36,6 @@ public class BallMovement : MonoBehaviour
             ball.transform.position = currentTemporaryNode.Position;
         }
     }
-
     private bool HandleBallMovement()
     {
         bool didMove = false;
@@ -77,7 +75,6 @@ public class BallMovement : MonoBehaviour
         {
             direction = new Vector2(1, -1);
         }
-
         if (direction != Vector2.zero)
         {
             didMove = TryMoveToNode(direction);
@@ -100,7 +97,6 @@ public class BallMovement : MonoBehaviour
         if (confirmedNode.IsNeighbor(targetNode))
         {
             currentTemporaryNode = targetNode;
-            isMoving = true;
             return true;
         }
         else
