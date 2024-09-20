@@ -79,16 +79,11 @@ public class BallMovement : MonoBehaviour
         {
             didMove = TryMoveToNode(direction);
         }
-
         return didMove;
     }
 
     public bool TryMoveToNode(Vector2 direction)
     {
-        bool isDiagonalMove = Mathf.Abs(direction.x) > 0 && Mathf.Abs(direction.y) > 0;
-
-        float distanceMultiplier = isDiagonalMove ? Mathf.Sqrt(2) : 1f;
-
         Vector2 newPosition = confirmedNode.Position + direction * gridSize;
         Node targetNode = gridManager.GetNodeAtPosition(newPosition);
 

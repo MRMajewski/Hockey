@@ -14,11 +14,11 @@ public class AIController : MonoBehaviour
 
     [Header("Node references")]
     [SerializeField]
-    private Node targetNode;  // Docelowy węzeł AI
+    private Node targetNode; 
     [SerializeField]
-    private Node currentNode;  // Obecny węzeł AI
+    private Node currentNode; 
     [SerializeField]
-    private Node goalNode;     // Cel AI, węzeł do którego AI zmierza
+    private Node goalNode;  
 
     public Node GoalNode { get => goalNode; }
 
@@ -78,13 +78,17 @@ public class AIController : MonoBehaviour
             }
             else
             {
+                gameController.PlayerWinsDueToNoAiMoves();
                 Debug.LogWarning("AI nie mogło wykonać ruchu.");
+                return;
             }
         }
         else
         {
+            gameController.PlayerWinsDueToNoAiMoves();
             // Jeśli nie znaleziono żadnych legalnych ruchów
             Debug.LogError("Brak dostępnych legalnych ruchów dla AI. AI czeka na następną turę.");
+            return;
         }
         turnManager.IsPlayerTurn = false;
         gameController.CheckIfGameEnded(ref bestNode);

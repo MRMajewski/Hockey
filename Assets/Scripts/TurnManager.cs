@@ -46,6 +46,8 @@ public class TurnManager : MonoBehaviour
                 ballMovement.SetConfirmedNode(ref lastConfirmedNode);
                 gameController.CheckIfGameEnded(ref lastConfirmedNode);
                 IsPlayerTurn = false;
+
+
                 PerformAITurn();
             }
             else
@@ -62,7 +64,11 @@ public class TurnManager : MonoBehaviour
             aiController.PerformAITurn();
 
             Debug.Log("Koniec tury AI!");
+
+          //  CheckIfPlayerHasMoves()
         }
         IsPlayerTurn = true;
     }
+
+
 }

@@ -52,6 +52,14 @@ public class GameController : MonoBehaviour
 
     public void CheckIfGameEnded(ref Node nodeUnderChecking)
     {
+        if (!isGameStarted) return;
+
+        if (turnManager.IsPlayerTurn)
+        {
+            if (!CheckIfPlayerHasLegalMoves())
+                return;
+        }  
+
         if (CheckForWin(ref nodeUnderChecking))
         {
             if (turnManager.IsPlayerTurn)
@@ -120,7 +128,65 @@ public class GameController : MonoBehaviour
         else
             return false;
     }
+    public bool CheckIfPlayerHasLegalMoves()
+    {
+        // Pobieramy obecny wêze³, na którym znajduje siê pi³ka (gracza)
+        Node currentNode = ballMovement.GetConfirmedNode();
+     //   if (currentNode == null) return;
 
+        // Pobieramy s¹siadów obecnego wêz³a
+        List<Node> neighbors = new List<Node>(currentNode.GetNeighbors());
+
+        bool hasLegalMove = false;
+
+        foreach (Node neighbor in neighbors)
+        {
+            // Sprawdzamy, czy ruch do s¹siada jest legalny
+            if (pathRenderer.IsMoveLegal(currentNode, neighbor))
+            {
+                hasLegalMove = true;
+                break; // Jeœli znajdziemy legalny ruch, przerywamy pêtlê
+            }
+        }
+
+        // Jeœli ¿aden s¹siad nie jest dostêpny
+        if (!hasLegalMove)
+        {
+            Debug.Log("Gracz nie ma ¿adnych legalnych ruchów. AI wygrywa!");
+            AiWinsDueToNoPlayerMoves();
+        }
+
+        return hasLegalMove;
+    }
+
+    public void PlayerWinsDueToNoAiMoves()
+    {
+        if (gameEnded)
+            return; // Zapobiega podwójnemu zakoñczeniu gry
+
+        playerScore++;  // Zwiêkszamy punkty gracza
+        infoText.text = "Player wins! AI has no more moves!";
+        Debug.Log("Player wins! AI has no more moves!");
+
+        UpdateScoreUI(); // Aktualizujemy interfejs
+        SaveScores();    // Zapisujemy wynik
+        gameEnded = true;
+        isGameStarted = false; // Koñczymy grê
+    }
+    public void AiWinsDueToNoPlayerMoves()
+    {
+        if (gameEnded)
+            return; // Zapobiega podwójnemu zakoñczeniu gry
+
+        aiScore++;  // Zwiêkszamy punkty AI
+        infoText.text = "AI wins! Player has no more moves!";
+        Debug.Log("AI wins! Player has no more moves!");
+
+        UpdateScoreUI(); // Aktualizujemy interfejs
+        SaveScores();    // Zapisujemy wynik
+        gameEnded = true;
+        isGameStarted = false; // Koñczymy grê
+    }
     private void LoadScores()
     {
         playerScore = PlayerPrefs.GetInt(PlayerScoreKey, 0);
