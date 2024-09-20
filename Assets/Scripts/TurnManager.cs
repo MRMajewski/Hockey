@@ -16,7 +16,11 @@ public class TurnManager : MonoBehaviour
 
     public void TurnManagerInit()
     {
+      //  Debug.Log(lastConfirmedNode.Position + " TurnManagerInit lastConfirmedNode");
+
         lastConfirmedNode = ballMovement.GetConfirmedNode(); // Ustawiamy pierwszy zatwierdzony wêze³
+
+        Debug.Log(lastConfirmedNode.Position + " TurnManagerInit lastConfirmedNode");
         isPlayerTurn = true;
     }
     void Update()
@@ -31,7 +35,11 @@ public class TurnManager : MonoBehaviour
         {
 
             Node currentNode = ballMovement.GetConfirmedNode(); ; // Tymczasowy wêze³ pi³ki
+            Debug.Log(currentNode.Position+ " currentNode");
             Node targetNode = ballMovement.GetTargetNode(); ;
+            Debug.Log(targetNode.Position + " targetNode");
+
+
 
             if (pathRenderer.IsMoveLegal(currentNode, targetNode))
                 {

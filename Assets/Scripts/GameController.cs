@@ -75,15 +75,13 @@ public class GameController : MonoBehaviour
 
     public void StartGame()
     {
-        //   if (isGameStarted)
-        //       return;
+           if (isGameStarted)
+               return;
 
         isGameStarted = true;
         pathRenderer.ClearPaths();
         Debug.Log(" arenaGenerator.GenerateArena()");
         arenaGenerator.GenerateArena();
-        Debug.Log("  aiController.SetGoalNodeForAI();");
-        aiController.SetGoalNodeForAI();
         Debug.Log("   ballMovement.BallInit(); ");
         ballMovement.BallInit();
         Debug.Log("    aiController.SetGoalNodeForAI(); ");
