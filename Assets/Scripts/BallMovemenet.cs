@@ -19,18 +19,6 @@ public class BallMovement : MonoBehaviour
     private Node currentTemporaryNode;
     private Node confirmedNode;
 
-    //public Node CurrentNode
-    //{
-    //    get { return currentTemporaryNode; }
-    //    set { currentTemporaryNode = value; }
-    //}
-
-    //public Node ConfirmedNode
-    //{
-    //    get { return confirmedNode; }
-    //    set { confirmedNode = value; }
-    //}
-
     public Vector2 temporaryBallPos = Vector2.zero;
 
     public void BallInit()

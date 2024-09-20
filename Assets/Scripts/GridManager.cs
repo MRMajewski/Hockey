@@ -5,10 +5,16 @@ using System;
 [Serializable]
 public class Node
 {
-    public Vector2 Position;
+    private Vector2 position;
+    private bool isOccupied;
+    private List<Node> neighbors; // Zmieniamy List<int> na List<Node>
+    private bool isGoalNode;
+
+
+    public Vector2 Position { get => position; set => position = value; }
     public bool IsOccupied;
-    public List<Node> Neighbors; // Zmieniamy List<int> na List<Node>
-    public bool IsGoalNode;
+    public List<Node> Neighbors { get => neighbors; set => neighbors = value; }  // Zmieniamy List<int> na List<Node>
+    public bool IsGoalNode { get => isGoalNode; set => isGoalNode=value; }
 
     public Node(Vector2 position, bool isGoal = false)
     {

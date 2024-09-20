@@ -9,6 +9,7 @@ public class AIController : MonoBehaviour
     [SerializeField]
     private BallPathRenderer pathRenderer;
 
+    [Header("Node references")]
     [SerializeField]
     private Node targetNode;  // Docelowy węzeł AI
     [SerializeField]
@@ -23,7 +24,9 @@ public class AIController : MonoBehaviour
 
     public void PerformAITurn()
     {
+        Debug.Log("Perform AI TURN currentNode: "+ currentNode.Position);
         currentNode = ballMovement.GetConfirmedNode();
+        Debug.Log("Perform AI TURN currentNode: " + currentNode.Position);
 
         if (currentNode == null || goalNode == null)
         {
@@ -47,7 +50,9 @@ public class AIController : MonoBehaviour
 
                 // Oblicz odległość od sąsiada do celu (goalNode)
                 float distance = Vector2.Distance(neighbor.Position, goalNode.Position);
-                Debug.Log($"Sprawdzanie węzła sąsiada: {neighbor.Position}, odległość: {distance}");
+
+                //na razie wyłączam
+             //   Debug.Log($"Sprawdzanie węzła sąsiada: {neighbor.Position}, odległość: {distance}");
 
                 // Znajdź najlepszego sąsiada (o najkrótszej odległości do celu)
                 if (distance < shortestDistance)
@@ -90,9 +95,10 @@ public class AIController : MonoBehaviour
             // Jeśli nie znaleziono żadnych legalnych ruchów
             Debug.LogError("Brak dostępnych legalnych ruchów dla AI. AI czeka na następną turę.");
         }
-        gameController.CheckIfGameEnded();
+        turnManager.IsPlayerTurn = false;
+        gameController.CheckIfGameEnded(ref bestNode);
         // Zakończ turę AI i ustaw, że jest tura gracza
-        turnManager.isPlayerTurn = true;
+        turnManager.IsPlayerTurn = true;
     }
 
     // Ustawia cel AI, czyli węzeł bramki przeciwnika

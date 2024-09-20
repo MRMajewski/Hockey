@@ -22,23 +22,27 @@ public class BallPathRenderer : MonoBehaviour
     }
     public bool IsMoveLegal(Node startNode, Node endNode)
     {
-
+        if(startNode.Position.Equals(endNode.Position))
+        {
+         //   Debug.Log("Ruch niedozwolony:Nie wykonano ruchu");
+            return false;
+        }
 
         // 2. SprawdŸ, czy istnieje ju¿ taka sama œcie¿ka w drawnPaths
         if (drawnPaths.Contains((startNode, endNode)) || drawnPaths.Contains((endNode, startNode)))
         {
-            Debug.Log("Ruch niedozwolony: Istnieje ju¿ po³¹czenie miêdzy startNode a endNode.");
+         //   Debug.Log("Ruch niedozwolony: Istnieje ju¿ po³¹czenie miêdzy startNode a endNode.");
             return false;
         }
 
         // 3. SprawdŸ, czy skosowy ruch przecina istniej¹ce œcie¿ki w drawnPaths
         if (DoesDiagonalMoveIntersect(startNode, endNode))
         {
-            Debug.Log("Ruch niedozwolony: Skosowy ruch przecina istniej¹c¹ œcie¿kê.");
+        //    Debug.Log("Ruch niedozwolony: Skosowy ruch przecina istniej¹c¹ œcie¿kê.");
             return false;
         }
 
-        Debug.Log("Ruch legalny.");
+     //   Debug.Log($"Ruch legalny {startNode.Position} =>{endNode.Position}");
         return true;
     }
 

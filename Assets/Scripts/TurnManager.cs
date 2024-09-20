@@ -2,17 +2,22 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    public BallMovement ballMovement;
-    public BallPathRenderer pathRenderer;
-    public AIController aiController;
-
-    public GameController gameController;
+    [SerializeField]
+    private BallMovement ballMovement;
+    [SerializeField]
+    private BallPathRenderer pathRenderer;
+    [SerializeField]
+    private AIController aiController;
+    [SerializeField]
+    private GameController gameController;
 
     private Node lastConfirmedNode;
     private Color playerColor = Color.blue;
 
-    public bool isPlayerTurn = true;
+    [SerializeField]
+    private bool isPlayerTurn = true;
 
+    public bool IsPlayerTurn { get => isPlayerTurn; set => isPlayerTurn = value; }
 
     public void TurnManagerInit()
     {
@@ -33,13 +38,8 @@ public class TurnManager : MonoBehaviour
     {
         if (Input.GetButtonDown("Submit"))
         {
-
             Node currentNode = ballMovement.GetConfirmedNode(); ; // Tymczasowy wêze³ pi³ki
-            Debug.Log(currentNode.Position+ " currentNode");
             Node targetNode = ballMovement.GetTargetNode(); ;
-            Debug.Log(targetNode.Position + " targetNode");
-
-
 
             if (pathRenderer.IsMoveLegal(currentNode, targetNode))
                 {
@@ -48,8 +48,8 @@ public class TurnManager : MonoBehaviour
                 isPlayerTurn = false;
                 Debug.Log("Koniec tury gracza!");
                 ballMovement.SetConfirmedNode(ref lastConfirmedNode);
-
-                gameController.CheckIfGameEnded();
+                isPlayerTurn = false;
+                gameController.CheckIfGameEnded(ref lastConfirmedNode);
 
                 PerformAITurn();
             }

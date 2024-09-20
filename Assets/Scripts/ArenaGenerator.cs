@@ -18,17 +18,17 @@ public class ArenaGenerator : MonoBehaviour
     [SerializeField]
     private GridManager gridManager;
 
-    //private void OnValidate()
-    //{
-    //    if (width % 2 != 0)
-    //    {
-    //        width = Mathf.Max(2, width - 1);
-    //    }
-    //    if (height % 2 != 0)
-    //    {
-    //        height = Mathf.Max(2, height - 1);
-    //    }
-    //}
+    private void OnValidate()
+    {
+        if (width % 2 != 0)
+        {
+            width = Mathf.Max(2, width - 1);
+        }
+        if (height % 2 != 0)
+        {
+            height = Mathf.Max(2, height - 1);
+        }
+    }
 
     public void GenerateArena()
     {
