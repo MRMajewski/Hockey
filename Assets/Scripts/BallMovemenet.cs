@@ -133,7 +133,7 @@ public class BallMovement : MonoBehaviour
         Node closestNode = null;
         float closestDistance = Mathf.Infinity;
 
-        foreach (var node in gridManager.GetAllNodes())
+        foreach (var node in gridManager.Nodes)
         {
             float distance = Vector2.Distance(position, node.Position);
             if (distance < closestDistance)
@@ -171,7 +171,7 @@ public class BallMovement : MonoBehaviour
         Node closestNode = null;
         float closestDistance = Mathf.Infinity;
 
-        foreach (Node node in gridManager.GetAllNodes())
+        foreach (Node node in gridManager.Nodes)
         {
             float distance = Vector2.Distance(position, node.Position);
             if (distance < closestDistance)

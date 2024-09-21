@@ -39,7 +39,6 @@ public class BallPathRenderer : MonoBehaviour
             return false;
         }
 
-        //   Debug.Log($"Ruch legalny {startNode.Position} =>{endNode.Position}");
         return true;
     }
 
@@ -121,7 +120,6 @@ public class BallPathRenderer : MonoBehaviour
             // Jeœli koñce maj¹ byæ wykluczone, musimy upewniæ siê, ¿e punkt nie jest koñcem segmentu
             return isOnSegment && (point != segmentStart && point != segmentEnd);
         }
-
         return isOnSegment;
     }
 

@@ -22,7 +22,6 @@ public class Node
         Neighbors = new List<Node>();
     }
 
-    // Sprawdzanie, czy dany wêze³ jest s¹siadem
     public bool IsNeighbor(Node node)
     {
         return Neighbors.Contains(node); 
@@ -52,8 +51,8 @@ public class GridManager : MonoBehaviour
     [SerializeField]
     private List<Node> goalNodes = new List<Node>();
 
-    //private Node topGoal;
-    //private Node bottomGoal;
+    public List<Node> Nodes => nodes;
+
     public void GenerateNodes(int gridWidth, int gridHeight, int goalWidth = 2)
     {
         offset = new Vector2(gridWidth / -2f, gridHeight / -2f);
@@ -122,7 +121,6 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
-
         DrawConnections();
     }
 
@@ -162,34 +160,6 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-
-    internal List<Node> GetNeighbors(Node currentNode)
-    {
-        List<Node> neighbourNodesList = new List<Node>();
-        // List<int> neighborsIndexes = currentNode.GetNeighbors();
-
-        foreach (var node in neighbourNodesList)
-        {
-            neighbourNodesList.Add(node);
-        }
-
-        return neighbourNodesList;
-    }
-    public int GetNodeIndex(Node node)
-    {
-        return nodes.IndexOf(node);  // Zwraca indeks node'a w liœcie nodes
-    }
-    //internal Node GetNodeAtPosition(Vector3 position)
-    //{
-    //    foreach (var node in nodes)
-    //    {
-    //        if (Vector3.Distance(position, new Vector3(node.Position.x, node.Position.y, position.z)) < nodeSpacing * 0.5f)
-    //        {
-    //            return node;
-    //        }
-    //    }
-    //    return null;
-    //}
     internal Node GetNodeAtPosition(Vector2 position)
     {
         foreach (var node in nodes)
@@ -217,27 +187,6 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    //void OnDrawGizmos()
-    //{
-    //    if (nodes != null)
-    //    {
-    //        Gizmos.color = Color.red;
-    //        foreach (var node in nodes)
-    //        {
-    //            Gizmos.DrawSphere(new Vector3(node.Position.x, node.Position.y, 0), 0.1f);
-    //        }
-
-    //        if (goalNodes != null)
-    //        {
-    //            Gizmos.color = Color.green;
-    //            foreach (var node in goalNodes)
-    //            {
-    //                Gizmos.DrawSphere(new Vector3(node.Position.x, node.Position.y, 0), 0.1f);
-    //            }
-    //        }
-    //    }
-    //}
-
     private Vector2 GetClosestNodePosition(Vector2 position)
     {
         Node closestNode = null;
@@ -256,6 +205,5 @@ public class GridManager : MonoBehaviour
         return closestNode != null ? closestNode.Position : position;
     }
 
-    public List<Node> GetAllNodes() => nodes;
-    public List<Node> GetGoalNodes() => goalNodes;
+   
 }

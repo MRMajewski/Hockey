@@ -29,17 +29,47 @@ public class GameController : MonoBehaviour
     private bool gameEnded = false;
     public bool isGameStarted = false;
 
+    #region Game managing methods
     private void Start()
     {
         isGameStarted = false;
         scoreManager.LoadScores();
         uiManager.UpdateScoreUI();
     }
-    public List<Node> GetAllNodes()
+
+    public void StartGame()
     {
-        return gridManager.GetAllNodes(); 
+        if (isGameStarted)
+            return;
+
+        isGameStarted = true;
+        pathRenderer.ClearPaths();
+        arenaGenerator.GenerateArena();
+        ballMovement.BallInit();
+        aiController.SetGoalNodeForAI();
+        turnManager.TurnManagerInit();
+        turnManager.IsPlayerTurn = true;
+        gameEnded = false;
+
+        Debug.Log("Game Started");
     }
 
+    public void ResetGame()
+    {
+        pathRenderer.ClearPaths();
+        ballMovement.BallInit();
+        isGameStarted = false;
+        StartGame();
+    }
+
+    public void ResetScores()
+    {
+        scoreManager.ResetScores();
+        uiManager.UpdateScoreUI();
+    }
+    #endregion
+
+    #region WinLoseConditions methods
     public void CheckIfGameEnded(ref Node nodeUnderChecking)
     {
         if (!isGameStarted) return;
@@ -76,36 +106,6 @@ public class GameController : MonoBehaviour
             return;
         }
     }
-
-    public void StartGame()
-    {
-           if (isGameStarted)
-               return;
-
-        isGameStarted = true;
-        pathRenderer.ClearPaths();
-        arenaGenerator.GenerateArena();
-        ballMovement.BallInit();
-        aiController.SetGoalNodeForAI();
-        turnManager.TurnManagerInit();
-        turnManager.IsPlayerTurn = true;
-        gameEnded = false;
-      
-        Debug.Log("Game Started");
-    }
-
-    public void ResetGame()
-    {
-        pathRenderer.ClearPaths();
-        ballMovement.BallInit();
-    }
-
-    public void ResetScores()
-    {
-        scoreManager.ResetScores();
-        uiManager.UpdateScoreUI();
-    }
-
     private bool CheckForWin(ref Node nodeUnderChecking)
     {
         if ((nodeUnderChecking.Position == aiController.GoalNode.Position))
@@ -115,9 +115,7 @@ public class GameController : MonoBehaviour
     }
     public bool CheckIfPlayerHasLegalMoves()
     {
-        // Pobieramy obecny wêze³, na którym znajduje siê pi³ka (gracza)
         Node currentNode = ballMovement.GetConfirmedNode();
-     //   if (currentNode == null) return;
 
         // Pobieramy s¹siadów obecnego wêz³a
         List<Node> neighbors = new List<Node>(currentNode.GetNeighbors());
@@ -140,7 +138,6 @@ public class GameController : MonoBehaviour
             Debug.Log("Gracz nie ma ¿adnych legalnych ruchów. AI wygrywa!");
             AiWinsDueToNoPlayerMoves();
         }
-
         return hasLegalMove;
     }
 
@@ -148,15 +145,12 @@ public class GameController : MonoBehaviour
     {
         if (gameEnded)
             return; // Zapobiega podwójnemu zakoñczeniu gry
-        scoreManager.PlayerWinsUpdateScore();
 
+        scoreManager.PlayerWinsUpdateScore();
         uiManager.DisplayMessage("Player wins! AI has no more moves!");
-      //  playerScore++;  // Zwiêkszamy punkty gracza
-     //   infoText.text = "Player wins! AI has no more moves!";
+
         Debug.Log("Player wins! AI has no more moves!");
 
-      //  UpdateScoreUI(); // Aktualizujemy interfejs
-     //   SaveScores();    // Zapisujemy wynik
         gameEnded = true;
         isGameStarted = false; // Koñczymy grê
     }
@@ -166,16 +160,12 @@ public class GameController : MonoBehaviour
             return; // Zapobiega podwójnemu zakoñczeniu gry
 
         scoreManager.AIWinsUpdateScore();
-        //  aiScore++;  // Zwiêkszamy punkty AI
-
         uiManager.DisplayMessage("AI wins! Player has no more moves!");
-       // infoText.text = "AI wins! Player has no more moves!";
+
         Debug.Log("AI wins! Player has no more moves!");
 
-     //   UpdateScoreUI(); // Aktualizujemy interfejs
-     //   SaveScores();    // Zapisujemy wynik
         gameEnded = true;
         isGameStarted = false; // Koñczymy grê
     }
-
+    #endregion
 }

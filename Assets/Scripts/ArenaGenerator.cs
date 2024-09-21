@@ -50,9 +50,7 @@ public class ArenaGenerator : MonoBehaviour
                 Instantiate(gridCellPrefab, position, Quaternion.identity, parent);
             }
         }
-
         AddGoals();
-
         gridManager.GenerateNodes(width, height);
     }
 
