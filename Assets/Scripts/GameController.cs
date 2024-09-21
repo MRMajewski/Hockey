@@ -20,17 +20,14 @@ public class GameController : MonoBehaviour
     private TurnManager turnManager;
     [SerializeField]
     private GridManager gridManager;
+    [SerializeField]
+    private UIManager uiManager;
+    [SerializeField]
+    private ScoreManager scoreManager;
+
 
     private const string PlayerScoreKey = "PlayerScore";
     private const string AiScoreKey = "AiScore";
-
-    [Header("UI references")]
-    [SerializeField]
-    private TextMeshProUGUI playerScoreText;
-    [SerializeField]
-    private TextMeshProUGUI aiScoreText;
-    [SerializeField]
-    private TextMeshProUGUI infoText;
 
     [SerializeField]
     private bool gameEnded = false;
@@ -42,12 +39,12 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         isGameStarted = false;
-        LoadScores();
-        UpdateScoreUI();
+        scoreManager.LoadScores();
+        uiManager.UpdateScoreUI();
     }
     public List<Node> GetAllNodes()
     {
-        return gridManager.GetAllNodes(); // Zak³adaj¹c, ¿e GridManager jest przypisany w GameController
+        return gridManager.GetAllNodes(); 
     }
 
     public void CheckIfGameEnded(ref Node nodeUnderChecking)
@@ -58,24 +55,29 @@ public class GameController : MonoBehaviour
         {
             if (!CheckIfPlayerHasLegalMoves())
                 return;
-        }  
+        }
+
+        if (gameEnded)
+            return;
 
         if (CheckForWin(ref nodeUnderChecking))
         {
+            string displayText;
             if (turnManager.IsPlayerTurn)
             {
-                playerScore++;
-                infoText.text = "Player wins!";
-                Debug.Log("Player wins!");
+                scoreManager.PlayerWinsUpdateScore();
+                displayText = "Player wins!";
             }
             else
             {
-                aiScore++;
-                infoText.text = "AI wins!";
-                Debug.Log("AI wins!");
+                scoreManager.AIWinsUpdateScore();
+
+                displayText = "AI wins!";
             }
-            UpdateScoreUI();
-            SaveScores();
+
+            uiManager.DisplayMessage(displayText);
+            uiManager.UpdateScoreUI();
+
             gameEnded = true;
             isGameStarted = false;
             return;
@@ -107,19 +109,9 @@ public class GameController : MonoBehaviour
 
     public void ResetScores()
     {
-        PlayerPrefs.SetInt(PlayerScoreKey, 0);
-        PlayerPrefs.SetInt(AiScoreKey, 0);
-
-        playerScore = 0;
-        aiScore = 0;
-        UpdateScoreUI();
+        scoreManager.ResetScores();
+        uiManager.UpdateScoreUI();
     }
-
-    //private void EndTurn()
-    //{
-    //    turnManager.IsPlayerTurn = !turnManager.IsPlayerTurn;
-    //    Debug.Log(turnManager.IsPlayerTurn ? "Player's turn" : "AI's turn");
-    //}
 
     private bool CheckForWin(ref Node nodeUnderChecking)
     {
@@ -163,13 +155,15 @@ public class GameController : MonoBehaviour
     {
         if (gameEnded)
             return; // Zapobiega podwójnemu zakoñczeniu gry
+        scoreManager.PlayerWinsUpdateScore();
 
-        playerScore++;  // Zwiêkszamy punkty gracza
-        infoText.text = "Player wins! AI has no more moves!";
+        uiManager.DisplayMessage("Player wins! AI has no more moves!");
+      //  playerScore++;  // Zwiêkszamy punkty gracza
+     //   infoText.text = "Player wins! AI has no more moves!";
         Debug.Log("Player wins! AI has no more moves!");
 
-        UpdateScoreUI(); // Aktualizujemy interfejs
-        SaveScores();    // Zapisujemy wynik
+      //  UpdateScoreUI(); // Aktualizujemy interfejs
+     //   SaveScores();    // Zapisujemy wynik
         gameEnded = true;
         isGameStarted = false; // Koñczymy grê
     }
@@ -178,36 +172,17 @@ public class GameController : MonoBehaviour
         if (gameEnded)
             return; // Zapobiega podwójnemu zakoñczeniu gry
 
-        aiScore++;  // Zwiêkszamy punkty AI
-        infoText.text = "AI wins! Player has no more moves!";
+        scoreManager.AIWinsUpdateScore();
+        //  aiScore++;  // Zwiêkszamy punkty AI
+
+        uiManager.DisplayMessage("AI wins! Player has no more moves!");
+       // infoText.text = "AI wins! Player has no more moves!";
         Debug.Log("AI wins! Player has no more moves!");
 
-        UpdateScoreUI(); // Aktualizujemy interfejs
-        SaveScores();    // Zapisujemy wynik
+     //   UpdateScoreUI(); // Aktualizujemy interfejs
+     //   SaveScores();    // Zapisujemy wynik
         gameEnded = true;
         isGameStarted = false; // Koñczymy grê
     }
-    private void LoadScores()
-    {
-        playerScore = PlayerPrefs.GetInt(PlayerScoreKey, 0);
-        aiScore = PlayerPrefs.GetInt(AiScoreKey, 0);
-    }
 
-    private void SaveScores()
-    {
-        PlayerPrefs.SetInt(PlayerScoreKey, playerScore);
-        PlayerPrefs.SetInt(AiScoreKey, aiScore);
-    }
-
-    private void UpdateScoreUI()
-    {
-        if (playerScoreText != null)
-        {
-            playerScoreText.text = "Player Score: " + playerScore;
-        }
-        if (aiScoreText != null)
-        {
-            aiScoreText.text = "AI Score: " + aiScore;
-        }
-    }
 }
