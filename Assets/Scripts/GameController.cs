@@ -25,16 +25,9 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private ScoreManager scoreManager;
 
-
-    private const string PlayerScoreKey = "PlayerScore";
-    private const string AiScoreKey = "AiScore";
-
     [SerializeField]
     private bool gameEnded = false;
     public bool isGameStarted = false;
-    private int playerScore = 0;
-    private int aiScore = 0;
-
 
     private void Start()
     {

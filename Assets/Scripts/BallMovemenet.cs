@@ -7,7 +7,10 @@ public class BallMovement : MonoBehaviour
     private GameController gameController;
     [SerializeField]
     private GridManager gridManager;
-    public GameObject ball;
+    [SerializeField]
+    private Transform ball;
+    [SerializeField]
+    private Transform cursor;
     public float gridSize = 1f;
     public Vector2Int arenaSize = new Vector2Int(8, 10);
     public int goalWidth = 2;
@@ -24,6 +27,7 @@ public class BallMovement : MonoBehaviour
     {
         confirmedNode = gridManager.GetNodeAtPosition(Vector2.zero);
         currentTemporaryNode = confirmedNode;
+        ball.position = confirmedNode.Position;
     }
 
     private void Update()
@@ -33,7 +37,7 @@ public class BallMovement : MonoBehaviour
         if (Input.anyKeyDown)
         {
             HandleBallMovement();
-            ball.transform.position = currentTemporaryNode.Position;
+            ball.position = currentTemporaryNode.Position;
         }
     }
     private bool HandleBallMovement()
@@ -103,13 +107,13 @@ public class BallMovement : MonoBehaviour
     public void SetConfirmedNode( ref Node node)
     {
         confirmedNode = node;
-        ball.transform.position = node.Position;
+        ball.position = node.Position;
         currentTemporaryNode = node;
     }
 
     public void ResetToLastConfirmedNode()
     {
-        ball.transform.position = confirmedNode.Position;
+        ball.position = confirmedNode.Position;
         currentTemporaryNode = confirmedNode;
     }
 

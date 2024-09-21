@@ -16,14 +16,20 @@ public class TurnManager : MonoBehaviour
 
     [SerializeField]
     private bool isPlayerTurn = true;
-
     public bool IsPlayerTurn { get => isPlayerTurn; set => isPlayerTurn = value; }
 
     public void TurnManagerInit()
     {
-        lastConfirmedNode = ballMovement.GetConfirmedNode(); 
+        lastConfirmedNode = ballMovement.GetConfirmedNode();
         isPlayerTurn = true;
     }
+
+    public void SwitchTurn()
+    {
+        IsPlayerTurn = !IsPlayerTurn;
+        Debug.Log(IsPlayerTurn ? "Player's turn" : "AI's turn");
+    }
+
     void Update()
     {
         if (isPlayerTurn)
@@ -34,7 +40,7 @@ public class TurnManager : MonoBehaviour
     {
         if (Input.GetButtonDown("Submit"))
         {
-            Node currentNode = ballMovement.GetConfirmedNode(); ; // Tymczasowy wêze³ pi³ki
+            Node currentNode = ballMovement.GetConfirmedNode(); ; 
             Node targetNode = ballMovement.GetTargetNode(); ;
 
             if (pathRenderer.IsMoveLegal(currentNode, targetNode))
@@ -46,7 +52,6 @@ public class TurnManager : MonoBehaviour
                 ballMovement.SetConfirmedNode(ref lastConfirmedNode);
                 gameController.CheckIfGameEnded(ref lastConfirmedNode);
                 IsPlayerTurn = false;
-
 
                 PerformAITurn();
             }
@@ -65,10 +70,7 @@ public class TurnManager : MonoBehaviour
 
             Debug.Log("Koniec tury AI!");
 
-          //  CheckIfPlayerHasMoves()
         }
         IsPlayerTurn = true;
     }
-
-
 }

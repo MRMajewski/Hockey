@@ -73,7 +73,7 @@ public class AIController : MonoBehaviour
 
             if (moveSuccessful)
             {
-                Debug.Log($"AI Move: {ballMovement.ball.transform.position} to {newPosition}");
+                Debug.Log($"AI Move: {currentNode.Position} to {newPosition}");
                 ballMovement.SetConfirmedNode(ref bestNode);
             }
             else
