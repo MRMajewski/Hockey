@@ -30,11 +30,13 @@ public class AIController : MonoBehaviour
 
     private IAIAlgorithm aiAlgorithm;
 
+    [SerializeField]
     private AIAlgorithmType algorithmType;
     public enum AIAlgorithmType
     {
         Greedy,
-        AStar
+        AStar, 
+        MinMax
     }
 
     public void SetAIAlgorithmFromButton(int index)
@@ -48,6 +50,10 @@ public class AIController : MonoBehaviour
         else if(algorithmType == AIAlgorithmType.AStar)
         {
             SetAIAlgorithm(new AStarAlgorithm(gridManager, pathRenderer));
+        }
+        else if (algorithmType == AIAlgorithmType.MinMax)
+        {
+            SetAIAlgorithm(new MinimaxAlgorithm(pathRenderer));
         }
     }
 
