@@ -61,19 +61,22 @@ public class TurnManager : MonoBehaviour
                 ballMovement.SetConfirmedNode(ref lastConfirmedNode);
 
                 // SprawdŸ, czy gra zakoñczy³a siê
-                gameController.CheckIfGameEnded(ref lastConfirmedNode);
+               if(gameController.CheckIfGameEnded(ref lastConfirmedNode))
+                {
+                    return;
+                }          
 
                 // SprawdŸ, czy gracz koñczy ruch na u¿ywanym wêŸle
                 if (pathRenderer.WasNodeAlreadyUsed(targetNode))
                 {
-                    uiManager.DisplayMessage("Dodatkowy ruch!");
+                    uiManager.DisplayMessageBonusMove("Dodatkowy ruch!");
                     Debug.Log("Gracz koñczy ruch na u¿ywanym wêŸle - dodatkowy ruch!");
                     // Tutaj gracz mo¿e wykonaæ kolejny ruch
                     return;  // Wyjœcie, aby gracz móg³ wykonaæ kolejny ruch
                 }
                 else
                 {
-
+                    uiManager.ResetBonusMoveMessage();
                     uiManager.ResetMessage();
                     // Tura gracza siê koñczy
                     IsPlayerTurn = false;
@@ -82,6 +85,7 @@ public class TurnManager : MonoBehaviour
             }
             else
             {
+                uiManager.ResetBonusMoveMessage();
                 uiManager.ResetMessage();
                 // Ruch nielegalny, reset do ostatniego potwierdzonego wêz³a
                 ballMovement.ResetToLastConfirmedNode();

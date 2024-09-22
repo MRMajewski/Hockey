@@ -11,6 +11,9 @@ public class AIController : MonoBehaviour
     private GameController gameController;
     [SerializeField]
     private BallPathRenderer pathRenderer;
+    [SerializeField]
+    private GridManager gridManager;
+
 
     [Header("Node references")]
     [SerializeField]
@@ -25,6 +28,40 @@ public class AIController : MonoBehaviour
     private const float DiagonalMoveDistance = 1.414f;  // √2 dla ruchu po skosie
     private const float StraightMoveDistance = 1f;  // Ruch po osi x/y
 
+    private IAIAlgorithm aiAlgorithm;
+
+    private AIAlgorithmType algorithmType;
+    public enum AIAlgorithmType
+    {
+        Greedy,
+        AStar
+    }
+
+    public void SetAIAlgorithmFromButton(int index)
+    {
+        algorithmType = (AIAlgorithmType)index;
+
+        if(algorithmType== AIAlgorithmType.Greedy)
+        {
+            SetAIAlgorithm(new GreedyAlgorithm(pathRenderer));
+        }
+        else if(algorithmType == AIAlgorithmType.AStar)
+        {
+            SetAIAlgorithm(new AStarAlgorithm(gridManager, pathRenderer));
+        }
+    }
+
+    public void SetAIAlgorithm(IAIAlgorithm algorithm)
+    {
+        this.aiAlgorithm = algorithm;
+    }
+
+    public void Start()
+    {
+      SetAIAlgorithm(new AStarAlgorithm(gridManager, pathRenderer));
+      //  SetAIAlgorithm(new GreedyAlgorithm(pathRenderer));
+    }
+
     public void PerformAITurn()
     {
         currentNode = ballMovement.GetConfirmedNode();
@@ -38,24 +75,8 @@ public class AIController : MonoBehaviour
         List<Node> neighbors = new List<Node>(currentNode.GetNeighbors());
 
         Node bestNode = null;
-        float shortestDistance = float.MaxValue;
-
-        foreach (Node neighbor in neighbors)
-        {
-            // Sprawdź, czy przejście do sąsiada nie jest blokowane
-            if (pathRenderer.IsMoveLegal(currentNode, neighbor))
-            {
-
-                float distance = Vector2.Distance(neighbor.Position, goalNode.Position);
-
-                // Znajdź najlepszego sąsiada (o najkrótszej odległości do celu)
-                if (distance < shortestDistance)
-                {
-                    shortestDistance = distance;
-                    bestNode = neighbor;
-                }
-            }
-        }
+  
+        bestNode = aiAlgorithm.GetBestMove(currentNode, goalNode);
 
         // Wykonaj ruch do najlepszego węzła
         if (bestNode != null)

@@ -70,18 +70,18 @@ public class GameController : MonoBehaviour
     #endregion
 
     #region WinLoseConditions methods
-    public void CheckIfGameEnded(ref Node nodeUnderChecking)
+    public bool CheckIfGameEnded(ref Node nodeUnderChecking)
     {
-        if (!isGameStarted) return;
+        if (!isGameStarted) return false;
 
         if (turnManager.IsPlayerTurn)
         {
             if (!CheckIfPlayerHasLegalMoves())
-                return;
+                return false;
         }
 
         if (gameEnded)
-            return;
+            return true;
 
         if (CheckForWin(ref nodeUnderChecking))
         {
@@ -99,12 +99,14 @@ public class GameController : MonoBehaviour
             }
 
             uiManager.DisplayMessage(displayText);
+            uiManager.ResetBonusMoveMessage();
             uiManager.UpdateScoreUI();
 
             gameEnded = true;
             isGameStarted = false;
-            return;
+            return true; ;
         }
+        return false;
     }
     private bool CheckForWin(ref Node nodeUnderChecking)
     {
