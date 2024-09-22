@@ -42,6 +42,20 @@ public class BallPathRenderer : MonoBehaviour
         return true;
     }
 
+    public bool WasNodeAlreadyUsed(Node targetNode)
+    {
+        for (int i = 0; i < drawnPaths.Count-2; i++)
+        {
+            var path = drawnPaths.ElementAt(i);
+
+            if (path.Item1 == targetNode || path.Item2 == targetNode)
+            {
+                return true; // Node zosta³ ju¿ u¿yty w jednej ze œcie¿ek
+            }
+        }
+        return false; // Node nie zosta³ jeszcze u¿yty
+    }
+
     private bool DoesDiagonalMoveIntersect(Node startNode, Node endNode)
     {
         // Jeœli ruch nie jest skosowy, nie ma potrzeby sprawdzaæ przeciêcia

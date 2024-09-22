@@ -26,7 +26,7 @@ public class GameController : MonoBehaviour
     private ScoreManager scoreManager;
 
     [SerializeField]
-    private bool gameEnded = false;
+    public bool gameEnded = false;
     public bool isGameStarted = false;
 
     #region Game managing methods

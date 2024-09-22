@@ -2223,6 +2223,7 @@ MonoBehaviour:
   pathRenderer: {fileID: 1648049777}
   aiController: {fileID: 1648049776}
   gameController: {fileID: 1648049778}
+  uiManager: {fileID: 1852832656}
   isPlayerTurn: 1
 --- !u!114 &1648049776
 MonoBehaviour:

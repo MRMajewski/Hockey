@@ -75,6 +75,13 @@ public class AIController : MonoBehaviour
             {
                 Debug.Log($"AI Move: {currentNode.Position} to {newPosition}");
                 ballMovement.SetConfirmedNode(ref bestNode);
+
+                if (pathRenderer.WasNodeAlreadyUsed(bestNode))
+                {
+                    Debug.Log("Gracz kończy ruch na używanym węźle - dodatkowy ruch!");
+                    PerformAITurn();
+                    return; 
+                }
             }
             else
             {

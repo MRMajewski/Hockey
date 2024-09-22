@@ -11,6 +11,9 @@ public class TurnManager : MonoBehaviour
     [SerializeField]
     private GameController gameController;
 
+    [SerializeField]
+    private UIManager uiManager;
+
     private Node lastConfirmedNode;
     private Color playerColor = Color.blue;
 
@@ -32,37 +35,61 @@ public class TurnManager : MonoBehaviour
 
     void Update()
     {
-        if (isPlayerTurn)
+        if (isPlayerTurn && gameController.isGameStarted && !gameController.gameEnded)
         HandlePlayerTurn();
     }
-
     void HandlePlayerTurn()
     {
         if (Input.GetButtonDown("Submit"))
         {
-            Node currentNode = ballMovement.GetConfirmedNode(); ; 
-            Node targetNode = ballMovement.GetTargetNode(); ;
+            Node currentNode = ballMovement.GetConfirmedNode();
+            Node targetNode = ballMovement.GetTargetNode();
 
+            if (currentNode == null || targetNode == null)
+                return;
+
+            // Sprawdzanie, czy ruch jest legalny
             if (pathRenderer.IsMoveLegal(currentNode, targetNode))
-                {
+            {
+                // Wykonaj ruch
                 pathRenderer.AddPosition(ref currentNode, ref targetNode, playerColor);
                 lastConfirmedNode = targetNode;
-            
-                Debug.Log("Koniec tury gracza!");
-                ballMovement.SetConfirmedNode(ref lastConfirmedNode);
-                gameController.CheckIfGameEnded(ref lastConfirmedNode);
-                IsPlayerTurn = false;
 
-                PerformAITurn();
+                Debug.Log("Koniec ruchu gracza!");
+
+                // Aktualizacja ostatniego potwierdzonego wêz³a
+                ballMovement.SetConfirmedNode(ref lastConfirmedNode);
+
+                // SprawdŸ, czy gra zakoñczy³a siê
+                gameController.CheckIfGameEnded(ref lastConfirmedNode);
+
+                // SprawdŸ, czy gracz koñczy ruch na u¿ywanym wêŸle
+                if (pathRenderer.WasNodeAlreadyUsed(targetNode))
+                {
+                    uiManager.DisplayMessage("Dodatkowy ruch!");
+                    Debug.Log("Gracz koñczy ruch na u¿ywanym wêŸle - dodatkowy ruch!");
+                    // Tutaj gracz mo¿e wykonaæ kolejny ruch
+                    return;  // Wyjœcie, aby gracz móg³ wykonaæ kolejny ruch
+                }
+                else
+                {
+
+                    uiManager.ResetMessage();
+                    // Tura gracza siê koñczy
+                    IsPlayerTurn = false;
+                    HandleAITurn();
+                }
             }
             else
             {
+                uiManager.ResetMessage();
+                // Ruch nielegalny, reset do ostatniego potwierdzonego wêz³a
                 ballMovement.ResetToLastConfirmedNode();
             }
         }
     }
 
-    void PerformAITurn()
+    void HandleAITurn()
     {
         if (aiController != null)
         {

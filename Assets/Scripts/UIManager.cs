@@ -20,4 +20,10 @@ public class UIManager : MonoBehaviour
     {
         infoText.text = message;
     }
+
+    public void ResetMessage()
+    {
+        if (!infoText.text.Equals(""))
+            infoText.text = "";
+    }
 }
