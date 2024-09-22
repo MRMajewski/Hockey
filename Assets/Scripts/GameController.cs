@@ -46,7 +46,12 @@ public class GameController : MonoBehaviour
         pathRenderer.ClearPaths();
         arenaGenerator.GenerateArena();
         ballMovement.BallInit();
-        aiController.SetGoalNodeForAI();
+
+
+      //  aiController.SetGoalNodeForAI();
+        aiController.SetRandomGoalNode();
+
+
         turnManager.TurnManagerInit();
         turnManager.IsPlayerTurn = true;
         gameEnded = false;

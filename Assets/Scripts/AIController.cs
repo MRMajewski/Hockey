@@ -132,8 +132,31 @@ public class AIController : MonoBehaviour
     public void SetGoalNodeForAI()
     {
         float arenaBottom = -ballMovement.arenaSize.y / 2f * ballMovement.gridSize;
-        goalNode = ballMovement.GetNodeAtPosition(new Vector2(0, arenaBottom));
+     //   goalNode = ballMovement.GetNodeAtPosition(new Vector2(0, arenaBottom));
+        goalNode = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[1].Position);
+   //     goalNode = gridManager.GoalNodes[1];
 
         Debug.Log($"AI GoalNode set to: {goalNode.Position}");
+    }
+
+    //Przerób!
+    public void SetRandomGoalNode()
+    {
+        int randomGoalIndex = Random.Range(0, 2);
+
+        goalNode = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[randomGoalIndex].Position);
+        Debug.Log($"AI GoalNode set to: {goalNode.Position}");
+    }
+
+    // Alternatywnie, logika może zmieniać bramkę na podstawie np. odległości od przeciwnika
+    private void SetGoalNodeBasedOnSituation()
+    {
+        // Przykład zmiany bramki w zależności od odległości od obecnego węzła
+   //     float distanceToGoal1 = Vector2.Distance(currentNode.Position, goalNode1.Position);
+   //     float distanceToGoal2 = Vector2.Distance(currentNode.Position, goalNode2.Position);
+
+        // Wybierz bramkę, która jest bliżej
+    //    goalNode = distanceToGoal1 < distanceToGoal2 ? goalNode1 : goalNode2;
+        Debug.Log($"AI GoalNode changed based on distance: {goalNode.Position}");
     }
 }

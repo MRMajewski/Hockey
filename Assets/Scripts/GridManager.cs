@@ -52,7 +52,7 @@ public class GridManager : MonoBehaviour
     private List<Node> goalNodes = new List<Node>();
 
     public List<Node> Nodes => nodes;
-
+    public List<Node> GoalNodes => goalNodes;
     public void GenerateNodes(int gridWidth, int gridHeight, int goalWidth = 2)
     {
         offset = new Vector2(gridWidth / -2f, gridHeight / -2f);
