@@ -51,8 +51,9 @@ public class GameController : MonoBehaviour
 
         //  aiController.SetGoalNodeForAI();
         //  aiController.SetRandomGoalNode();
-        aiController.SetGoalNodeBasedOnSituation();
 
+        //     aiController.SetAIAlgorithmFromButton(0);
+        aiController.InitAI();
         turnManager.TurnManagerInit();
         turnManager.IsPlayerTurn = true;
         gameEnded = false;

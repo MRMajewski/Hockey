@@ -32,9 +32,10 @@ public class AIController : MonoBehaviour
     private IAIAlgorithm aiAlgorithm;
 
     [SerializeField]
-    private AIAlgorithmType algorithmType;
+    private AIAlgorithmType algorithmType = AIAlgorithmType.Simple;
     public enum AIAlgorithmType
     {
+        Simple,
         Greedy,
         AStar, 
         MinMax
@@ -42,33 +43,38 @@ public class AIController : MonoBehaviour
 
     public void SetAIAlgorithmFromButton(int index)
     {
-        algorithmType = (AIAlgorithmType)index;
+        algorithmType = (AIAlgorithmType)index;     
+    }
 
-        if(algorithmType== AIAlgorithmType.Greedy)
+    public void SetAIAlgorithm(AIAlgorithmType algorithmType)
+    {
+        if (algorithmType == AIAlgorithmType.Simple)
         {
-            SetAIAlgorithm(new GreedyAlgorithm(pathRenderer));
+            this.aiAlgorithm = new GreedyAlgorithm(pathRenderer);
+            SetBottomGoalOnly();
         }
-        else if(algorithmType == AIAlgorithmType.AStar)
+        else if (algorithmType == AIAlgorithmType.Greedy)
         {
-            SetAIAlgorithm(new AStarAlgorithm(gridManager, pathRenderer));
+            this.aiAlgorithm = new GreedyAlgorithm(pathRenderer);
+            SetRandomGoalNode();
+        }
+        else if (algorithmType == AIAlgorithmType.AStar)
+        {
+            this.aiAlgorithm = new AStarAlgorithm(gridManager, pathRenderer);
+            SetGoalNodeBasedOnSituation();
         }
         else if (algorithmType == AIAlgorithmType.MinMax)
         {
-            SetAIAlgorithm(new MinimaxAlgorithm(pathRenderer));
+            this.aiAlgorithm = new MinimaxAlgorithm(pathRenderer);
+            SetGoalNodeBasedOnSituation();
         }
         uIManager.DisplayAITypeInfo(algorithmType);
     }
 
-    public void SetAIAlgorithm(IAIAlgorithm algorithm)
+    public void InitAI()
     {
-        this.aiAlgorithm = algorithm;
-    }
-
-    public void Start()
-    {
-      SetAIAlgorithm(new AStarAlgorithm(gridManager, pathRenderer)); 
-     uIManager.DisplayAITypeInfo(algorithmType);
-        //  SetAIAlgorithm(new GreedyAlgorithm(pathRenderer));
+        SetAIAlgorithm(algorithmType);
+        uIManager.DisplayAITypeInfo(algorithmType);
     }
 
     public void PerformAITurn()
@@ -131,18 +137,19 @@ public class AIController : MonoBehaviour
         gameController.CheckIfGameEnded(ref bestNode);
     }
 
-    // Ustawia cel AI, czyli węzeł bramki przeciwnika
+
     public void SetGoalNodeForAI()
     {
-        float arenaBottom = -ballMovement.arenaSize.y / 2f * ballMovement.gridSize;
-     //   goalNode = ballMovement.GetNodeAtPosition(new Vector2(0, arenaBottom));
         goalNode = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[1].Position);
-   //     goalNode = gridManager.GoalNodes[1];
-
         Debug.Log($"AI GoalNode set to: {goalNode.Position}");
     }
 
-    //Przerób!
+    public void SetBottomGoalOnly()
+    {
+        goalNode = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[1].Position);
+        Debug.Log($"AI GoalNode set to: {goalNode.Position}");
+    }
+
     public void SetRandomGoalNode()
     {
         int randomGoalIndex = Random.Range(0, 2);
@@ -151,7 +158,6 @@ public class AIController : MonoBehaviour
         Debug.Log($"AI GoalNode set to: {goalNode.Position}");
     }
 
-    // Alternatywnie, logika może zmieniać bramkę na podstawie np. odległości od przeciwnika
     public void SetGoalNodeBasedOnSituation()
     {
         Node goalNodeTop = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[0].Position);
