@@ -43,7 +43,8 @@ public class AIController : MonoBehaviour
 
     public void SetAIAlgorithmFromButton(int index)
     {
-        algorithmType = (AIAlgorithmType)index;     
+        algorithmType = (AIAlgorithmType)index;
+        uIManager.DisplayAITypeInfo(algorithmType);
     }
 
     public void SetAIAlgorithm(AIAlgorithmType algorithmType)
