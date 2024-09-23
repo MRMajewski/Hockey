@@ -13,7 +13,8 @@ public class AIController : MonoBehaviour
     private BallPathRenderer pathRenderer;
     [SerializeField]
     private GridManager gridManager;
-
+    [SerializeField]
+    private UIManager uIManager;
 
     [Header("Node references")]
     [SerializeField]
@@ -55,6 +56,7 @@ public class AIController : MonoBehaviour
         {
             SetAIAlgorithm(new MinimaxAlgorithm(pathRenderer));
         }
+        uIManager.DisplayAITypeInfo(algorithmType);
     }
 
     public void SetAIAlgorithm(IAIAlgorithm algorithm)
@@ -64,8 +66,9 @@ public class AIController : MonoBehaviour
 
     public void Start()
     {
-      SetAIAlgorithm(new AStarAlgorithm(gridManager, pathRenderer));
-      //  SetAIAlgorithm(new GreedyAlgorithm(pathRenderer));
+      SetAIAlgorithm(new AStarAlgorithm(gridManager, pathRenderer)); 
+     uIManager.DisplayAITypeInfo(algorithmType);
+        //  SetAIAlgorithm(new GreedyAlgorithm(pathRenderer));
     }
 
     public void PerformAITurn()
@@ -149,14 +152,15 @@ public class AIController : MonoBehaviour
     }
 
     // Alternatywnie, logika może zmieniać bramkę na podstawie np. odległości od przeciwnika
-    private void SetGoalNodeBasedOnSituation()
+    public void SetGoalNodeBasedOnSituation()
     {
-        // Przykład zmiany bramki w zależności od odległości od obecnego węzła
-   //     float distanceToGoal1 = Vector2.Distance(currentNode.Position, goalNode1.Position);
-   //     float distanceToGoal2 = Vector2.Distance(currentNode.Position, goalNode2.Position);
+        Node goalNodeTop = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[0].Position);
+        Node goalNodeBottom = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[1].Position);
+        float distanceToGoal1 = Vector2.Distance(currentNode.Position, goalNodeTop.Position);
+        float distanceToGoal2 = Vector2.Distance(currentNode.Position, goalNodeBottom.Position);
 
         // Wybierz bramkę, która jest bliżej
-    //    goalNode = distanceToGoal1 < distanceToGoal2 ? goalNode1 : goalNode2;
+        goalNode = distanceToGoal1 < distanceToGoal2 ? goalNodeTop : goalNodeBottom;
         Debug.Log($"AI GoalNode changed based on distance: {goalNode.Position}");
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using static AIController;
 
 public class GameController : MonoBehaviour
 {
@@ -48,9 +49,9 @@ public class GameController : MonoBehaviour
         ballMovement.BallInit();
 
 
-      //  aiController.SetGoalNodeForAI();
-        aiController.SetRandomGoalNode();
-
+        //  aiController.SetGoalNodeForAI();
+        //  aiController.SetRandomGoalNode();
+        aiController.SetGoalNodeBasedOnSituation();
 
         turnManager.TurnManagerInit();
         turnManager.IsPlayerTurn = true;

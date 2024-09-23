@@ -2381,7 +2381,7 @@ GameObject:
   - component: {fileID: 1044142505}
   - component: {fileID: 1044142504}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: AI Type Info
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2446,7 +2446,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: AI TYPE
+  m_text: 'AI TYPE: '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3400,6 +3400,7 @@ MonoBehaviour:
   gameController: {fileID: 1648049778}
   pathRenderer: {fileID: 1648049777}
   gridManager: {fileID: 837017963}
+  uIManager: {fileID: 1852832656}
   targetNode:
     IsOccupied: 0
   currentNode:
@@ -3719,6 +3720,7 @@ MonoBehaviour:
   aiScoreText: {fileID: 288900839}
   infoText: {fileID: 838990526}
   bonusMoveInfotext: {fileID: 1502937386}
+  aiTypeInfotext: {fileID: 1044142505}
   scoreManager: {fileID: 1648049780}
 --- !u!224 &1852832657
 RectTransform:
