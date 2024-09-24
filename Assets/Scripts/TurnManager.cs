@@ -2,17 +2,8 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    //[SerializeField]
-    //private BallMovement ballMovement;
-    //[SerializeField]
-    //private BallPathRenderer pathRenderer;
-    //[SerializeField]
-    //private AIController aiController;
     [SerializeField]
     private GameController gameController;
-
-    //[SerializeField]
-    //private UIManager uiManager;
 
     private Node lastConfirmedNode;
     private Color playerColor = Color.blue;

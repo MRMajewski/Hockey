@@ -44,8 +44,9 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         isGameStarted = false;
-        scoreManager.LoadScores();
-        uiManager.UpdateScoreUI();
+        ScoreManager.LoadScores();
+        
+        uiManager.UIInit();
     }
 
     public void StartGame()

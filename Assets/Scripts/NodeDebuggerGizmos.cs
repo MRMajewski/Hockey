@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NodeDebuggerGizmos : MonoBehaviour
 {
-    public BallMovement ballMovement; // Referencja do skryptu BallMovement
-    public float gizmoRadius = 0.5f; // Promieñ sfery gizmo
+    public BallMovement ballMovement; 
+    public float gizmoRadius = 0.5f;
 
     private void OnDrawGizmos()
     {
@@ -14,20 +14,15 @@ public class NodeDebuggerGizmos : MonoBehaviour
             Node currentNode = ballMovement.GetConfirmedNode();
             if (currentNode != null)
             {
-                // Ustaw kolor gizmo na zielony
                 Gizmos.color = Color.green;
 
-                // Rysuj sferê gizmo na pozycji aktualnego wêz³a
                 Gizmos.DrawSphere(currentNode.Position, gizmoRadius);
             }
 
             Node tempNode = ballMovement.GetTargetNode();
             if (tempNode != null)
             {
-                // Ustaw kolor gizmo na zielony
                 Gizmos.color = Color.blue;
-
-                // Rysuj sferê gizmo na pozycji aktualnego wêz³a
                 Gizmos.DrawSphere(tempNode.Position, gizmoRadius/2);
             }
         }

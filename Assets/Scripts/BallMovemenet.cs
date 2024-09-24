@@ -5,8 +5,7 @@ public class BallMovement : MonoBehaviour
 {
     [SerializeField]
     private GameController gameController;
-    //[SerializeField]
-    //private GridManager gridManager;
+
     [SerializeField]
     private Transform ball;
     [SerializeField]
@@ -14,9 +13,6 @@ public class BallMovement : MonoBehaviour
     public float gridSize = 1f;
     public Vector2Int arenaSize = new Vector2Int(8, 10);
     public int goalWidth = 2;
-
-    //[SerializeField]
-    //private BallPathRenderer pathRenderer;
 
     private Node currentTemporaryNode;
     private Node confirmedNode;
@@ -92,11 +88,8 @@ public class BallMovement : MonoBehaviour
     {
         if (!gameController.isGameStarted) return;
 
-        // Zaktualizuj pozycję kursora
         UpdateCursorPosition();
 
-        // Sprawdź kliknięcie myszki i obsłuż ruch
- 
     }
     private void HandleMouseClickMovement()
     {
@@ -133,7 +126,6 @@ public class BallMovement : MonoBehaviour
         Vector2 gridPosition = GetClosestNodePosition(new Vector2(mousePosition.x, mousePosition.y));
         cursor.position = new Vector3(gridPosition.x, gridPosition.y, cursor.position.z);
     }
-
 
     public void SetConfirmedNode( ref Node node)
     {

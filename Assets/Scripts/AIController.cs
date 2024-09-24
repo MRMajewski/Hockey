@@ -3,18 +3,8 @@ using UnityEngine;
 
 public class AIController : MonoBehaviour
 {
-    //[SerializeField]
-    //private BallMovement ballMovement;
-    //[SerializeField]
-    //private TurnManager turnManager;
     [SerializeField]
     private GameController gameController;
-    //[SerializeField]
-    //private BallPathRenderer pathRenderer;
-    //[SerializeField]
-    //private GridManager gridManager;
-    //[SerializeField]
-    //private UIManager uIManager;
 
     [Header("Node references")]
     [SerializeField]
@@ -44,7 +34,6 @@ public class AIController : MonoBehaviour
     public void SetAIAlgorithmFromButton(int index)
     {
         algorithmType = (AIAlgorithmType)index;
-        gameController.UIManager.DisplayAITypeInfo(algorithmType);
     }
 
     public void SetAIAlgorithm(AIAlgorithmType algorithmType)
@@ -69,13 +58,11 @@ public class AIController : MonoBehaviour
             this.aiAlgorithm = new MinimaxAlgorithm(gameController.PathRenderer);
             SetGoalNodeBasedOnSituation();
         }
-        gameController.UIManager.DisplayAITypeInfo(algorithmType);
     }
 
     public void InitAI()
     {
         SetAIAlgorithm(algorithmType);
-        gameController.UIManager.DisplayAITypeInfo(algorithmType);
     }
 
     public void PerformAITurn()
@@ -94,7 +81,7 @@ public class AIController : MonoBehaviour
   
         bestNode = aiAlgorithm.GetBestMove(currentNode, goalNode);
 
-        // Wykonaj ruch do najlepszego węzła
+
         if (bestNode != null)
         {
             Vector2 direction = bestNode.Position - currentNode.Position;
