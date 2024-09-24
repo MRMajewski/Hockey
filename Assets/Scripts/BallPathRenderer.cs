@@ -19,6 +19,11 @@ public class BallPathRenderer : MonoBehaviour
     }
     public bool IsMoveLegal(Node startNode, Node endNode)
     {
+        if (!startNode.IsNeighbor(endNode))
+        {
+            // Przesuñ pi³kê na wybrany wêze³
+            return false;
+        }
         if (startNode.Position.Equals(endNode.Position))
         {
             //   Debug.Log("Ruch niedozwolony:Nie wykonano ruchu");

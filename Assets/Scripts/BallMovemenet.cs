@@ -30,79 +30,110 @@ public class BallMovement : MonoBehaviour
         ball.position = confirmedNode.Position;
     }
 
+    #region WSAD Controls
+    //private void Update()
+    //{
+    //    if (!gameController.isGameStarted) return;
+
+    //    if (Input.anyKeyDown)
+    //    {
+    //        HandleBallMovement();
+    //        ball.position = currentTemporaryNode.Position;
+    //    }
+    //}
+    //private bool HandleBallMovement()
+    //{
+    //    bool didMove = false;
+
+    //    currentTemporaryNode = confirmedNode;
+    //    Vector2 direction = Vector2.zero;
+
+    //    if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+    //    {
+    //        direction = Vector2.up;
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+    //    {
+    //        direction = Vector2.down;
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+    //    {
+    //        direction = Vector2.left;
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+    //    {
+    //        direction = Vector2.right;
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.Q))
+    //    {
+    //        direction = new Vector2(-1, 1);
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.E))
+    //    {
+    //        direction = new Vector2(1, 1);
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.Z))
+    //    {
+    //        direction = new Vector2(-1, -1);
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.C))
+    //    {
+    //        direction = new Vector2(1, -1);
+    //    }
+    //    if (direction != Vector2.zero)
+    //    {
+    //        didMove = TryMoveToNode(direction);
+    //    }
+    //    return didMove;
+    //}
+    #endregion
+
     private void Update()
     {
         if (!gameController.isGameStarted) return;
 
-        if (Input.anyKeyDown)
-        {
-            HandleBallMovement();
-            ball.position = currentTemporaryNode.Position;
-        }
+        // Zaktualizuj pozycję kursora
+        UpdateCursorPosition();
+
+        // Sprawdź kliknięcie myszki i obsłuż ruch
+ 
     }
-    private bool HandleBallMovement()
+    private void HandleMouseClickMovement()
     {
-        bool didMove = false;
+        // Pobierz pozycję kursora
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 targetPosition = new Vector2(mousePosition.x, mousePosition.y);
 
-        currentTemporaryNode = confirmedNode;
-        Vector2 direction = Vector2.zero;
+        // Znajdź najbliższy węzeł dla pozycji kursora
+        currentTemporaryNode = gridManager.GetNodeAtPosition(targetPosition);
 
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        // Sprawdź, czy wybrany węzeł jest sąsiadem obecnego węzła piłki
+        if (confirmedNode.IsNeighbor(currentTemporaryNode))
         {
-            direction = Vector2.up;
-        }
-        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            direction = Vector2.down;
-        }
-        else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            direction = Vector2.left;
-        }
-        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            direction = Vector2.right;
-        }
-        else if (Input.GetKeyDown(KeyCode.Q))
-        {
-            direction = new Vector2(-1, 1);
-        }
-        else if (Input.GetKeyDown(KeyCode.E))
-        {
-            direction = new Vector2(1, 1);
-        }
-        else if (Input.GetKeyDown(KeyCode.Z))
-        {
-            direction = new Vector2(-1, -1);
-        }
-        else if (Input.GetKeyDown(KeyCode.C))
-        {
-            direction = new Vector2(1, -1);
-        }
-        if (direction != Vector2.zero)
-        {
-            didMove = TryMoveToNode(direction);
-        }
-        return didMove;
-    }
-
-    public bool TryMoveToNode(Vector2 direction)
-    {
-        Vector2 newPosition = confirmedNode.Position + direction * gridSize;
-        Node targetNode = gridManager.GetNodeAtPosition(newPosition);
-
-        temporaryBallPos = newPosition;
-
-        if (confirmedNode.IsNeighbor(targetNode))
-        {
-            currentTemporaryNode = targetNode;
-            return true;
+            // Przesuń piłkę na wybrany węzeł
+            MoveBallToNode(currentTemporaryNode);
         }
         else
         {
-            return false;
+            Debug.Log("Wybrany węzeł nie jest sąsiadem.");
         }
     }
+
+    // Przesuwa piłkę do wybranego węzła
+    public void MoveBallToNode(Node targetNode)
+    {
+        currentTemporaryNode = targetNode;
+        SetConfirmedNode(ref targetNode);
+    }
+
+    // Ustawia pozycję kursora na najbliższy węzeł
+    private void UpdateCursorPosition()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 gridPosition = GetClosestNodePosition(new Vector2(mousePosition.x, mousePosition.y));
+        cursor.position = new Vector3(gridPosition.x, gridPosition.y, cursor.position.z);
+    }
+
 
     public void SetConfirmedNode( ref Node node)
     {
@@ -119,7 +150,13 @@ public class BallMovement : MonoBehaviour
 
     public ref Node GetTargetNode()
     {
-        currentTemporaryNode = gridManager.GetNodeAtPosition(temporaryBallPos);
+        //  currentTemporaryNode = gridManager.GetNodeAtPosition(temporaryBallPos);
+
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 targetPosition = new Vector2(mousePosition.x, mousePosition.y);
+
+        // Znajdź najbliższy węzeł dla pozycji kursora
+        currentTemporaryNode = gridManager.GetNodeAtPosition(targetPosition);
         return ref currentTemporaryNode;
     }
 
@@ -181,5 +218,22 @@ public class BallMovement : MonoBehaviour
             }
         }
         return closestNode;
+    }
+    public bool TryMoveToNode(Vector2 direction)
+    {
+        Vector2 newPosition = confirmedNode.Position + direction * gridSize;
+        Node targetNode = gridManager.GetNodeAtPosition(newPosition);
+
+        temporaryBallPos = newPosition;
+
+        if (confirmedNode.IsNeighbor(targetNode))
+        {
+            currentTemporaryNode = targetNode;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

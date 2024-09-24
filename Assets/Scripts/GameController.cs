@@ -48,11 +48,6 @@ public class GameController : MonoBehaviour
         arenaGenerator.GenerateArena();
         ballMovement.BallInit();
 
-
-        //  aiController.SetGoalNodeForAI();
-        //  aiController.SetRandomGoalNode();
-
-        //     aiController.SetAIAlgorithmFromButton(0);
         aiController.InitAI();
         turnManager.TurnManagerInit();
         turnManager.IsPlayerTurn = true;
