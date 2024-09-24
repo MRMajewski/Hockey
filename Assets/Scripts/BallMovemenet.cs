@@ -5,8 +5,8 @@ public class BallMovement : MonoBehaviour
 {
     [SerializeField]
     private GameController gameController;
-    [SerializeField]
-    private GridManager gridManager;
+    //[SerializeField]
+    //private GridManager gridManager;
     [SerializeField]
     private Transform ball;
     [SerializeField]
@@ -15,8 +15,8 @@ public class BallMovement : MonoBehaviour
     public Vector2Int arenaSize = new Vector2Int(8, 10);
     public int goalWidth = 2;
 
-    [SerializeField]
-    private BallPathRenderer pathRenderer;
+    //[SerializeField]
+    //private BallPathRenderer pathRenderer;
 
     private Node currentTemporaryNode;
     private Node confirmedNode;
@@ -25,7 +25,7 @@ public class BallMovement : MonoBehaviour
 
     public void BallInit()
     {
-        confirmedNode = gridManager.GetNodeAtPosition(Vector2.zero);
+        confirmedNode = gameController.GridManager.GetNodeAtPosition(Vector2.zero);
         currentTemporaryNode = confirmedNode;
         ball.position = confirmedNode.Position;
     }
@@ -105,7 +105,7 @@ public class BallMovement : MonoBehaviour
         Vector2 targetPosition = new Vector2(mousePosition.x, mousePosition.y);
 
         // Znajdź najbliższy węzeł dla pozycji kursora
-        currentTemporaryNode = gridManager.GetNodeAtPosition(targetPosition);
+        currentTemporaryNode = gameController.GridManager.GetNodeAtPosition(targetPosition);
 
         // Sprawdź, czy wybrany węzeł jest sąsiadem obecnego węzła piłki
         if (confirmedNode.IsNeighbor(currentTemporaryNode))
@@ -156,7 +156,7 @@ public class BallMovement : MonoBehaviour
         Vector2 targetPosition = new Vector2(mousePosition.x, mousePosition.y);
 
         // Znajdź najbliższy węzeł dla pozycji kursora
-        currentTemporaryNode = gridManager.GetNodeAtPosition(targetPosition);
+        currentTemporaryNode = gameController.GridManager.GetNodeAtPosition(targetPosition);
         return ref currentTemporaryNode;
     }
 
@@ -170,7 +170,7 @@ public class BallMovement : MonoBehaviour
         Node closestNode = null;
         float closestDistance = Mathf.Infinity;
 
-        foreach (var node in gridManager.Nodes)
+        foreach (var node in gameController.GridManager.Nodes)
         {
             float distance = Vector2.Distance(position, node.Position);
             if (distance < closestDistance)
@@ -186,7 +186,7 @@ public class BallMovement : MonoBehaviour
     public bool IsNeighborNode(Vector2 targetPosition)
     {
         Vector2 currentNodePosition = GetClosestNodePosition((Vector2)ball.transform.position);
-        Node currentNode = gridManager.GetNodeAtPosition(currentNodePosition);
+        Node currentNode = gameController.GridManager.GetNodeAtPosition(currentNodePosition);
 
         if (currentNode != null)
         {
@@ -208,7 +208,7 @@ public class BallMovement : MonoBehaviour
         Node closestNode = null;
         float closestDistance = Mathf.Infinity;
 
-        foreach (Node node in gridManager.Nodes)
+        foreach (Node node in gameController.GridManager.Nodes)
         {
             float distance = Vector2.Distance(position, node.Position);
             if (distance < closestDistance)
@@ -222,7 +222,7 @@ public class BallMovement : MonoBehaviour
     public bool TryMoveToNode(Vector2 direction)
     {
         Vector2 newPosition = confirmedNode.Position + direction * gridSize;
-        Node targetNode = gridManager.GetNodeAtPosition(newPosition);
+        Node targetNode = gameController.GridManager.GetNodeAtPosition(newPosition);
 
         temporaryBallPos = newPosition;
 

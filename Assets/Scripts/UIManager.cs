@@ -12,11 +12,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI bonusMoveInfotext;
     [SerializeField] private TextMeshProUGUI aiTypeInfotext;
     [Space]
-    [SerializeField] private ScoreManager scoreManager;
+    [SerializeField] private GameController gameController;
+   // [SerializeField] private ScoreManager scoreManager;
     public void UpdateScoreUI()
     {
-        playerScoreText.text = scoreManager.PlayerScore.ToString();
-        aiScoreText.text = scoreManager.AIScore.ToString();
+        playerScoreText.text = gameController.ScoreManager.PlayerScore.ToString();
+        aiScoreText.text = gameController.ScoreManager.AIScore.ToString();
     }
 
     public void DisplayMessage(string message)

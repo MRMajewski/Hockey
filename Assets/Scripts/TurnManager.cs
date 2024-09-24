@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    [SerializeField]
-    private BallMovement ballMovement;
-    [SerializeField]
-    private BallPathRenderer pathRenderer;
-    [SerializeField]
-    private AIController aiController;
+    //[SerializeField]
+    //private BallMovement ballMovement;
+    //[SerializeField]
+    //private BallPathRenderer pathRenderer;
+    //[SerializeField]
+    //private AIController aiController;
     [SerializeField]
     private GameController gameController;
 
-    [SerializeField]
-    private UIManager uiManager;
+    //[SerializeField]
+    //private UIManager uiManager;
 
     private Node lastConfirmedNode;
     private Color playerColor = Color.blue;
@@ -23,7 +23,7 @@ public class TurnManager : MonoBehaviour
 
     public void TurnManagerInit()
     {
-        lastConfirmedNode = ballMovement.GetConfirmedNode();
+        lastConfirmedNode = gameController.BallMovement.GetConfirmedNode();
         isPlayerTurn = true;
     }
 
@@ -42,24 +42,24 @@ public class TurnManager : MonoBehaviour
     {
         if (Input.GetMouseButtonUp(0))
         {
-            Node currentNode = ballMovement.GetConfirmedNode();
-            Node targetNode = ballMovement.GetTargetNode();
+            Node currentNode = gameController.BallMovement.GetConfirmedNode();
+            Node targetNode = gameController.BallMovement.GetTargetNode();
 
             if (currentNode == null || targetNode == null)
                 return;
 
             // Sprawdzanie, czy ruch jest legalny
-            if (pathRenderer.IsMoveLegal(currentNode, targetNode))
+            if (gameController.PathRenderer.IsMoveLegal(currentNode, targetNode))
             {
                 // Wykonaj ruch
-                ballMovement.MoveBallToNode(targetNode);
-                pathRenderer.AddPosition(ref currentNode, ref targetNode, playerColor);
+                gameController.BallMovement.MoveBallToNode(targetNode);
+                gameController.PathRenderer.AddPosition(ref currentNode, ref targetNode, playerColor);
                 lastConfirmedNode = targetNode;
 
                 Debug.Log("Koniec ruchu gracza!");
 
                 // Aktualizacja ostatniego potwierdzonego wêz³a
-                ballMovement.SetConfirmedNode(ref lastConfirmedNode);
+                gameController.BallMovement.SetConfirmedNode(ref lastConfirmedNode);
 
                 // SprawdŸ, czy gra zakoñczy³a siê
                if(gameController.CheckIfGameEnded(ref lastConfirmedNode))
@@ -68,17 +68,17 @@ public class TurnManager : MonoBehaviour
                 }          
 
                 // SprawdŸ, czy gracz koñczy ruch na u¿ywanym wêŸle
-                if (pathRenderer.WasNodeAlreadyUsed(targetNode))
+                if (gameController.PathRenderer.WasNodeAlreadyUsed(targetNode))
                 {
-                    uiManager.DisplayMessageBonusMove("Dodatkowy ruch!");
+                    gameController.UIManager.DisplayMessageBonusMove("BONUS MOVE");
                     Debug.Log("Gracz koñczy ruch na u¿ywanym wêŸle - dodatkowy ruch!");
                     // Tutaj gracz mo¿e wykonaæ kolejny ruch
                     return;  // Wyjœcie, aby gracz móg³ wykonaæ kolejny ruch
                 }
                 else
                 {
-                    uiManager.ResetBonusMoveMessage();
-                    uiManager.ResetMessage();
+                    gameController.UIManager.ResetBonusMoveMessage();
+                    gameController.UIManager.ResetMessage();
                     // Tura gracza siê koñczy
                     IsPlayerTurn = false;
                     HandleAITurn();
@@ -86,19 +86,19 @@ public class TurnManager : MonoBehaviour
             }
             else
             {
-                uiManager.ResetBonusMoveMessage();
-                uiManager.ResetMessage();
+                gameController.UIManager.ResetBonusMoveMessage();
+                gameController.UIManager.ResetMessage();
                 // Ruch nielegalny, reset do ostatniego potwierdzonego wêz³a
-                ballMovement.ResetToLastConfirmedNode();
+                gameController.BallMovement.ResetToLastConfirmedNode();
             }
         }
     }
 
     void HandleAITurn()
     {
-        if (aiController != null)
+        if (gameController.AIController != null)
         {
-            aiController.PerformAITurn();
+            gameController.AIController.PerformAITurn();
 
             Debug.Log("Koniec tury AI!");
 

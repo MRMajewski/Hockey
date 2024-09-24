@@ -3,18 +3,18 @@ using UnityEngine;
 
 public class AIController : MonoBehaviour
 {
-    [SerializeField]
-    private BallMovement ballMovement;
-    [SerializeField]
-    private TurnManager turnManager;
+    //[SerializeField]
+    //private BallMovement ballMovement;
+    //[SerializeField]
+    //private TurnManager turnManager;
     [SerializeField]
     private GameController gameController;
-    [SerializeField]
-    private BallPathRenderer pathRenderer;
-    [SerializeField]
-    private GridManager gridManager;
-    [SerializeField]
-    private UIManager uIManager;
+    //[SerializeField]
+    //private BallPathRenderer pathRenderer;
+    //[SerializeField]
+    //private GridManager gridManager;
+    //[SerializeField]
+    //private UIManager uIManager;
 
     [Header("Node references")]
     [SerializeField]
@@ -44,43 +44,43 @@ public class AIController : MonoBehaviour
     public void SetAIAlgorithmFromButton(int index)
     {
         algorithmType = (AIAlgorithmType)index;
-        uIManager.DisplayAITypeInfo(algorithmType);
+        gameController.UIManager.DisplayAITypeInfo(algorithmType);
     }
 
     public void SetAIAlgorithm(AIAlgorithmType algorithmType)
     {
         if (algorithmType == AIAlgorithmType.Simple)
         {
-            this.aiAlgorithm = new GreedyAlgorithm(pathRenderer);
+            this.aiAlgorithm = new GreedyAlgorithm(gameController.PathRenderer);
             SetBottomGoalOnly();
         }
         else if (algorithmType == AIAlgorithmType.Greedy)
         {
-            this.aiAlgorithm = new GreedyAlgorithm(pathRenderer);
+            this.aiAlgorithm = new GreedyAlgorithm(gameController.PathRenderer);
             SetRandomGoalNode();
         }
         else if (algorithmType == AIAlgorithmType.AStar)
         {
-            this.aiAlgorithm = new AStarAlgorithm(gridManager, pathRenderer);
+            this.aiAlgorithm = new AStarAlgorithm(gameController.GridManager, gameController.PathRenderer);
             SetGoalNodeBasedOnSituation();
         }
         else if (algorithmType == AIAlgorithmType.MinMax)
         {
-            this.aiAlgorithm = new MinimaxAlgorithm(pathRenderer);
+            this.aiAlgorithm = new MinimaxAlgorithm(gameController.PathRenderer);
             SetGoalNodeBasedOnSituation();
         }
-        uIManager.DisplayAITypeInfo(algorithmType);
+        gameController.UIManager.DisplayAITypeInfo(algorithmType);
     }
 
     public void InitAI()
     {
         SetAIAlgorithm(algorithmType);
-        uIManager.DisplayAITypeInfo(algorithmType);
+        gameController.UIManager.DisplayAITypeInfo(algorithmType);
     }
 
     public void PerformAITurn()
     {
-        currentNode = ballMovement.GetConfirmedNode();
+        currentNode = gameController.BallMovement.GetConfirmedNode();
 
         if (currentNode == null || goalNode == null)
         {
@@ -105,15 +105,15 @@ public class AIController : MonoBehaviour
             // Przeskaluj wektor ruchu na odpowiednią odległość
             Vector2 newPosition = currentNode.Position + direction.normalized * moveDistance;
 
-            pathRenderer.AddPosition(ref currentNode, ref bestNode, Color.red);
-            bool moveSuccessful = ballMovement.TryMoveToNode(newPosition - ballMovement.GetTargetNode().Position);
+            gameController.PathRenderer.AddPosition(ref currentNode, ref bestNode, Color.red);
+            bool moveSuccessful = gameController.BallMovement.TryMoveToNode(newPosition - gameController.BallMovement.GetTargetNode().Position);
 
             if (moveSuccessful)
             {
                 Debug.Log($"AI Move: {currentNode.Position} to {newPosition}");
-                ballMovement.SetConfirmedNode(ref bestNode);
+                gameController.BallMovement.SetConfirmedNode(ref bestNode);
 
-                if (pathRenderer.WasNodeAlreadyUsed(bestNode))
+                if (gameController.PathRenderer.WasNodeAlreadyUsed(bestNode))
                 {
                     Debug.Log("Gracz kończy ruch na używanym węźle - dodatkowy ruch!");
                     PerformAITurn();
@@ -134,20 +134,20 @@ public class AIController : MonoBehaviour
             Debug.LogError("Brak dostępnych legalnych ruchów dla AI. AI czeka na następną turę.");
             return;
         }
-        turnManager.IsPlayerTurn = false;
+        gameController.TurnManager.IsPlayerTurn = false;
         gameController.CheckIfGameEnded(ref bestNode);
     }
 
 
     public void SetGoalNodeForAI()
     {
-        goalNode = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[1].Position);
+        goalNode = gameController.BallMovement.GetNodeAtPosition(gameController.GridManager.GoalNodes[1].Position);
         Debug.Log($"AI GoalNode set to: {goalNode.Position}");
     }
 
     public void SetBottomGoalOnly()
     {
-        goalNode = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[1].Position);
+        goalNode = gameController.BallMovement.GetNodeAtPosition(gameController.GridManager.GoalNodes[1].Position);
         Debug.Log($"AI GoalNode set to: {goalNode.Position}");
     }
 
@@ -155,14 +155,14 @@ public class AIController : MonoBehaviour
     {
         int randomGoalIndex = Random.Range(0, 2);
 
-        goalNode = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[randomGoalIndex].Position);
+        goalNode = gameController.BallMovement.GetNodeAtPosition(gameController.GridManager.GoalNodes[randomGoalIndex].Position);
         Debug.Log($"AI GoalNode set to: {goalNode.Position}");
     }
 
     public void SetGoalNodeBasedOnSituation()
     {
-        Node goalNodeTop = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[0].Position);
-        Node goalNodeBottom = ballMovement.GetNodeAtPosition(gridManager.GoalNodes[1].Position);
+        Node goalNodeTop = gameController.BallMovement.GetNodeAtPosition(gameController.GridManager.GoalNodes[0].Position);
+        Node goalNodeBottom = gameController.BallMovement.GetNodeAtPosition(gameController.GridManager.GoalNodes[1].Position);
         float distanceToGoal1 = Vector2.Distance(currentNode.Position, goalNodeTop.Position);
         float distanceToGoal2 = Vector2.Distance(currentNode.Position, goalNodeBottom.Position);
 

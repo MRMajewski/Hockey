@@ -26,6 +26,16 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private ScoreManager scoreManager;
 
+   
+    public BallPathRenderer PathRenderer { get => pathRenderer; }
+    public BallMovement BallMovement { get => ballMovement; }
+    public ArenaGenerator ArenaGenerator { get => arenaGenerator; }
+    public AIController AIController { get => aiController; }
+    public TurnManager TurnManager { get => turnManager; }
+    public GridManager GridManager { get => gridManager; }
+    public UIManager UIManager { get => uiManager; }
+    public ScoreManager ScoreManager { get => scoreManager; }
+
     [SerializeField]
     public bool gameEnded = false;
     public bool isGameStarted = false;
