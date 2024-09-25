@@ -83,6 +83,11 @@ public class GameController : MonoBehaviour
         scoreManager.ResetScores();
         uiManager.UpdateScoreUI();
     }
+
+    public void ExitFromGame()
+    {
+        Application.Quit();
+    }
     #endregion
 
     #region WinLoseConditions methods

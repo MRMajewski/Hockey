@@ -18,6 +18,12 @@ public class ArenaGenerator : MonoBehaviour
     [SerializeField]
     private GridManager gridManager;
 
+    [SerializeField]
+    private GridSizeSliders gridSliders;
+
+    public int Width { get => width; set => width = value; }
+    public int Height { get => height; set => height = value; }
+
     private void OnValidate()
     {
         if (width % 2 != 0)
@@ -39,6 +45,8 @@ public class ArenaGenerator : MonoBehaviour
         }
 
         ClearArena();
+
+        gridSliders.UpdateValueDisplay();
 
         Vector3 basePosition = new Vector3(-width * cellSize / 2 + offset.x, -height * cellSize / 2 + offset.y, 0);
 
