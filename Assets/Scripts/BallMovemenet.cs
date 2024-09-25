@@ -23,10 +23,12 @@ public class BallMovement : MonoBehaviour
     public float scaleFactor = 1.25f;  
     public float duration = 0.5f;
 
+    private Tween cursorTween;
+    private Vector3 originalCursorScale;
 
     private void Start()
     {
-        StartPulsating();
+        originalCursorScale = cursor.transform.localScale;
     }
     public void BallInit()
     {
@@ -98,52 +100,54 @@ public class BallMovement : MonoBehaviour
         if (!gameController.isGameStarted) return;
 
         UpdateCursorPosition();
-
-    }
-    private void HandleMouseClickMovement()
-    {
-        // Pobierz pozycję kursora
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 targetPosition = new Vector2(mousePosition.x, mousePosition.y);
-
-        // Znajdź najbliższy węzeł dla pozycji kursora
-        currentTemporaryNode = gameController.GridManager.GetNodeAtPosition(targetPosition);
-
-        // Sprawdź, czy wybrany węzeł jest sąsiadem obecnego węzła piłki
-        if (confirmedNode.IsNeighbor(currentTemporaryNode))
-        {
-            // Przesuń piłkę na wybrany węzeł
-            MoveBallToNode(currentTemporaryNode);
-        }
-        else
-        {
-            Debug.Log("Wybrany węzeł nie jest sąsiadem.");
-        }
     }
 
-    // Przesuwa piłkę do wybranego węzła
     public void MoveBallToNode(Node targetNode)
     {
         currentTemporaryNode = targetNode;
         SetConfirmedNode(ref targetNode);
     }
 
-    // Ustawia pozycję kursora na najbliższy węzeł
+
     private void UpdateCursorPosition()
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 gridPosition = GetClosestNodePosition(new Vector2(mousePosition.x, mousePosition.y));
         cursor.position = new Vector3(gridPosition.x, gridPosition.y, cursor.position.z);
+
+        Node nodeUnderCursor = gameController.GridManager.GetNodeAtPosition(gridPosition);
+
+
+        if (confirmedNode.IsNeighbor(nodeUnderCursor))
+        {
+            StartPulsating(); 
+        }
+        else
+        {
+            StopPulsating(); 
+        }
     }
+
     private void StartPulsating()
     {
-        // Zapisz pierwotną skalę obiektu
-        Vector3 originalScale = cursor.transform.localScale;
+        if (cursorTween != null && cursorTween.IsPlaying())
+        {
+            return; 
+        }
 
-        // Zapętlamy animację zwiększania i zmniejszania skali
-        cursor.transform.DOScale(originalScale * scaleFactor, duration)
-            .SetLoops(-1, LoopType.Yoyo)  // -1 oznacza nieskończoną liczbę powtórzeń, Yoyo - w obie strony
-            .SetEase(Ease.InOutSine);     // Ustawienie łagodnego easeingu dla płynniejszego efektu
+        cursorTween = cursor.transform.DOScale(originalCursorScale * scaleFactor, duration)
+            .SetLoops(-1, LoopType.Yoyo)  
+            .SetEase(Ease.InOutSine);  
+    }
+
+    private void StopPulsating()
+    {
+
+        if (cursorTween != null && cursorTween.IsPlaying())
+        {
+            cursorTween.Kill(); 
+            cursor.transform.localScale = originalCursorScale; 
+        }
     }
 
     public void SetConfirmedNode( ref Node node)
@@ -161,12 +165,9 @@ public class BallMovement : MonoBehaviour
 
     public ref Node GetTargetNode()
     {
-        //  currentTemporaryNode = gridManager.GetNodeAtPosition(temporaryBallPos);
-
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 targetPosition = new Vector2(mousePosition.x, mousePosition.y);
 
-        // Znajdź najbliższy węzeł dla pozycji kursora
         currentTemporaryNode = gameController.GridManager.GetNodeAtPosition(targetPosition);
         return ref currentTemporaryNode;
     }

@@ -95,12 +95,13 @@ public class UIManager : MonoBehaviour
         if (infoText.text.Equals(""))
             return;
 
-        infoText.DOKill();
+        DOTween.KillAll();
+
         Sequence resetSequence = DOTween.Sequence();
         resetSequence.Append(infoText.DOFade(0, infoTextAppearDuration));  // Fade-in
 
-        resetSequence.OnComplete(() => infoText.text = "");
-
+        resetSequence.OnComplete(() => infoText.text = "") ;
+        resetSequence.OnComplete(() => DOTween.Kill(infoText.rectTransform));
     }
     public void ResetBonusMoveMessage()
     {
@@ -119,6 +120,6 @@ public class UIManager : MonoBehaviour
         winSequence.Append(infoText.DOFade(1, infoTextAppearDuration));  
         winSequence.Join(infoText.rectTransform.DOScale(1.2f, infoTextAppearDuration).SetEase(Ease.OutBack));
 
-        winSequence.Append(infoText.transform.DOScale(1f, infoTextPulseDuration).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo));
+        winSequence.Append(infoText.rectTransform.DOScale(1f, infoTextPulseDuration).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo));
     }
 }
