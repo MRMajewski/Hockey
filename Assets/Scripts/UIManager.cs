@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -21,7 +22,18 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Button firstAITypeButton;
 
+    [Header("Tween referencs")]
     [SerializeField] private Vector3 enlargeScaleVector;
+
+    public CanvasGroup bonusMoveText;
+    public float appearDuration = 0.2f; 
+    public float blinkDuration = 0.1f;  
+    public int blinkCount = 3;          
+    public float disappearDuration = 0.2f; 
+
+    [Space]
+    public float infoTextAppearDuration = 0.5f;     
+    public float infoTextPulseDuration = 0.3f;     
 
     public void UIInit()
     {
@@ -61,19 +73,52 @@ public class UIManager : MonoBehaviour
     public void DisplayMessage(string message)
     {
         infoText.text = message;
+        InfoTextAnimation();
     }
     public void DisplayMessageBonusMove(string message)
-    {
-        bonusMoveInfotext.text = message;
+    { 
+        bonusMoveText.alpha = 0;
+        bonusMoveText.DOKill();
+
+        Sequence blinkSequence = DOTween.Sequence();
+
+        blinkSequence.Append(bonusMoveText.DOFade(1, appearDuration));
+
+        blinkSequence.Append(bonusMoveText.DOFade(0, blinkDuration)
+            .SetLoops(blinkCount * 2, LoopType.Yoyo)); 
+
+        blinkSequence.Append(bonusMoveText.DOFade(0, disappearDuration));
     }
+
     public void ResetMessage()
     {
-        if (!infoText.text.Equals(""))
-            infoText.text = "";
+        if (infoText.text.Equals(""))
+            return;
+
+        infoText.DOKill();
+        Sequence resetSequence = DOTween.Sequence();
+        resetSequence.Append(infoText.DOFade(0, infoTextAppearDuration));  // Fade-in
+
+        resetSequence.OnComplete(() => infoText.text = "");
+
     }
     public void ResetBonusMoveMessage()
     {
-        if (!bonusMoveInfotext.text.Equals(""))
-            bonusMoveInfotext.text = "";
+        if (bonusMoveText.alpha != 0)
+            bonusMoveText.alpha = 0;
+    }
+
+    public void InfoTextAnimation()
+    {
+        infoText.DOKill();
+
+        infoText.rectTransform.localScale = Vector3.zero;  
+
+        Sequence winSequence = DOTween.Sequence();
+
+        winSequence.Append(infoText.DOFade(1, infoTextAppearDuration));  
+        winSequence.Join(infoText.rectTransform.DOScale(1.2f, infoTextAppearDuration).SetEase(Ease.OutBack));
+
+        winSequence.Append(infoText.transform.DOScale(1f, infoTextPulseDuration).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo));
     }
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class BallMovement : MonoBehaviour
 {
@@ -19,6 +20,14 @@ public class BallMovement : MonoBehaviour
 
     public Vector2 temporaryBallPos = Vector2.zero;
 
+    public float scaleFactor = 1.25f;  
+    public float duration = 0.5f;
+
+
+    private void Start()
+    {
+        StartPulsating();
+    }
     public void BallInit()
     {
         confirmedNode = gameController.GridManager.GetNodeAtPosition(Vector2.zero);
@@ -125,6 +134,16 @@ public class BallMovement : MonoBehaviour
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 gridPosition = GetClosestNodePosition(new Vector2(mousePosition.x, mousePosition.y));
         cursor.position = new Vector3(gridPosition.x, gridPosition.y, cursor.position.z);
+    }
+    private void StartPulsating()
+    {
+        // Zapisz pierwotną skalę obiektu
+        Vector3 originalScale = cursor.transform.localScale;
+
+        // Zapętlamy animację zwiększania i zmniejszania skali
+        cursor.transform.DOScale(originalScale * scaleFactor, duration)
+            .SetLoops(-1, LoopType.Yoyo)  // -1 oznacza nieskończoną liczbę powtórzeń, Yoyo - w obie strony
+            .SetEase(Ease.InOutSine);     // Ustawienie łagodnego easeingu dla płynniejszego efektu
     }
 
     public void SetConfirmedNode( ref Node node)

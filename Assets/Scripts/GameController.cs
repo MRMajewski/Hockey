@@ -59,6 +59,9 @@ public class GameController : MonoBehaviour
         arenaGenerator.GenerateArena();
         ballMovement.BallInit();
 
+        UIManager.ResetMessage();
+        UIManager.ResetBonusMoveMessage();
+
         aiController.InitAI();
         turnManager.TurnManagerInit();
         turnManager.IsPlayerTurn = true;
