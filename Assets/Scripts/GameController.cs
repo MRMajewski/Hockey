@@ -131,7 +131,8 @@ public class GameController : MonoBehaviour
     }
     private bool CheckForWin(ref Node nodeUnderChecking)
     {
-        if ((nodeUnderChecking.Position == aiController.GoalNode.Position))
+        if ((nodeUnderChecking.Position == gridManager.GoalNodes[0].Position || nodeUnderChecking.Position == gridManager.GoalNodes[1].Position))
+
             return true;
         else
             return false;
@@ -140,25 +141,20 @@ public class GameController : MonoBehaviour
     {
         Node currentNode = ballMovement.GetConfirmedNode();
 
-        // Pobieramy s¹siadów obecnego wêz³a
         List<Node> neighbors = new List<Node>(currentNode.GetNeighbors());
 
         bool hasLegalMove = false;
 
         foreach (Node neighbor in neighbors)
         {
-            // Sprawdzamy, czy ruch do s¹siada jest legalny
             if (pathRenderer.IsMoveLegal(currentNode, neighbor))
             {
                 hasLegalMove = true;
-                break; // Jeœli znajdziemy legalny ruch, przerywamy pêtlê
+                break; 
             }
         }
-
-        // Jeœli ¿aden s¹siad nie jest dostêpny
         if (!hasLegalMove)
         {
-            Debug.Log("Gracz nie ma ¿adnych legalnych ruchów. AI wygrywa!");
             AiWinsDueToNoPlayerMoves();
         }
         return hasLegalMove;
@@ -167,7 +163,7 @@ public class GameController : MonoBehaviour
     public void PlayerWinsDueToNoAiMoves()
     {
         if (gameEnded)
-            return; // Zapobiega podwójnemu zakoñczeniu gry
+            return; 
 
         scoreManager.PlayerWinsUpdateScore();
         uiManager.DisplayMessage("Player wins! AI has no more moves!");

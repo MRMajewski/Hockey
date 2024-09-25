@@ -65,6 +65,7 @@ public class AIController : MonoBehaviour
         SetAIAlgorithm(algorithmType);
     }
 
+
     public void PerformAITurn()
     {
         currentNode = gameController.BallMovement.GetConfirmedNode();
@@ -75,55 +76,126 @@ public class AIController : MonoBehaviour
             return;
         }
 
-        List<Node> neighbors = new List<Node>(currentNode.GetNeighbors());
+        bool moveSuccessful = false;
 
-        Node bestNode = null;
-  
-        bestNode = aiAlgorithm.GetBestMove(currentNode, goalNode);
-
-
-        if (bestNode != null)
+        // Pętla while próbuje wykonać ruch do skutku
+        while (!moveSuccessful)
         {
-            Vector2 direction = bestNode.Position - currentNode.Position;
+            List<Node> neighbors = new List<Node>(currentNode.GetNeighbors());
+            Node bestNode = aiAlgorithm.GetBestMove(currentNode, goalNode);
 
-            // Sprawdź, czy ruch jest po skosie (zmiana na osi x i y jednocześnie)
-            float moveDistance = (Mathf.Abs(direction.x) > 0 && Mathf.Abs(direction.y) > 0) ? DiagonalMoveDistance : StraightMoveDistance;
-
-            // Przeskaluj wektor ruchu na odpowiednią odległość
-            Vector2 newPosition = currentNode.Position + direction.normalized * moveDistance;
-
-            gameController.PathRenderer.AddPosition(ref currentNode, ref bestNode, Color.red);
-            bool moveSuccessful = gameController.BallMovement.TryMoveToNode(newPosition - gameController.BallMovement.GetTargetNode().Position);
-
-            if (moveSuccessful)
+            if (bestNode != null)
             {
-                Debug.Log($"AI Move: {currentNode.Position} to {newPosition}");
-                gameController.BallMovement.SetConfirmedNode(ref bestNode);
+                Vector2 direction = bestNode.Position - currentNode.Position;
 
-                if (gameController.PathRenderer.WasNodeAlreadyUsed(bestNode))
+                // Sprawdź, czy ruch jest po skosie (zmiana na osi x i y jednocześnie)
+                float moveDistance = (Mathf.Abs(direction.x) > 0 && Mathf.Abs(direction.y) > 0) ? DiagonalMoveDistance : StraightMoveDistance;
+
+                // Przeskaluj wektor ruchu na odpowiednią odległość
+                Vector2 newPosition = currentNode.Position + direction.normalized * moveDistance;
+
+                // Próbuj przesunąć AI na nową pozycję
+                moveSuccessful = gameController.BallMovement.TryMoveToNode(newPosition - gameController.BallMovement.GetTargetNode().Position);
+
+                if (moveSuccessful)
                 {
-                    Debug.Log("Gracz kończy ruch na używanym węźle - dodatkowy ruch!");
-                    PerformAITurn();
-                    return; 
+                    gameController.PathRenderer.AddPosition(ref currentNode, ref bestNode, Color.red);
+                    Debug.Log($"AI Move: {currentNode.Position} to {newPosition}");
+                    gameController.BallMovement.SetConfirmedNode(ref bestNode);
+
+                    // Sprawdzenie, czy węzeł był już używany, aby przyznać dodatkowy ruch
+                    if (gameController.PathRenderer.WasNodeAlreadyUsed(bestNode))
+                    {
+                        Debug.Log("Gracz kończy ruch na używanym węźle - dodatkowy ruch!");
+                        continue;  // Wykonaj kolejny ruch w tej samej turze
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("AI nie mogło wykonać ruchu. Zmiana celu.");
+                    SwitchGoalNode();
+                    // Pętla while kontynuuje próbę wykonania ruchu z nowym celem
                 }
             }
             else
             {
+                // Jeśli brak dostępnych legalnych ruchów
                 gameController.PlayerWinsDueToNoAiMoves();
-                Debug.LogWarning("AI nie mogło wykonać ruchu.");
+                Debug.LogError("Brak dostępnych legalnych ruchów dla AI. AI czeka na następną turę.");
                 return;
             }
         }
-        else
-        {
-            gameController.PlayerWinsDueToNoAiMoves();
-            // Jeśli nie znaleziono żadnych legalnych ruchów
-            Debug.LogError("Brak dostępnych legalnych ruchów dla AI. AI czeka na następną turę.");
-            return;
-        }
+
+        // Po zakończeniu ruchu AI, zmień turę na gracza
         gameController.TurnManager.IsPlayerTurn = false;
-        gameController.CheckIfGameEnded(ref bestNode);
+        gameController.CheckIfGameEnded(ref currentNode);
     }
+
+
+    //public void PerformAITurn()
+    //{
+    //    currentNode = gameController.BallMovement.GetConfirmedNode();
+
+    //    if (currentNode == null || goalNode == null)
+    //    {
+    //        Debug.LogWarning("AI nie ma ustawionych węzłów.");
+    //        return;
+    //    }
+
+    //    List<Node> neighbors = new List<Node>(currentNode.GetNeighbors());
+
+    //    Node bestNode = null;
+  
+    //    bestNode = aiAlgorithm.GetBestMove(currentNode, goalNode);
+
+
+    //    if (bestNode != null)
+    //    {
+    //        Vector2 direction = bestNode.Position - currentNode.Position;
+
+    //        // Sprawdź, czy ruch jest po skosie (zmiana na osi x i y jednocześnie)
+    //        float moveDistance = (Mathf.Abs(direction.x) > 0 && Mathf.Abs(direction.y) > 0) ? DiagonalMoveDistance : StraightMoveDistance;
+
+    //        // Przeskaluj wektor ruchu na odpowiednią odległość
+    //        Vector2 newPosition = currentNode.Position + direction.normalized * moveDistance;
+
+          
+    //        bool moveSuccessful = gameController.BallMovement.TryMoveToNode(newPosition - gameController.BallMovement.GetTargetNode().Position);
+
+    //        if (moveSuccessful)
+    //        {
+    //            gameController.PathRenderer.AddPosition(ref currentNode, ref bestNode, Color.red);
+    //            Debug.Log($"AI Move: {currentNode.Position} to {newPosition}");
+    //            gameController.BallMovement.SetConfirmedNode(ref bestNode);
+
+    //            if (gameController.PathRenderer.WasNodeAlreadyUsed(bestNode))
+    //            {
+    //                Debug.Log("Gracz kończy ruch na używanym węźle - dodatkowy ruch!");
+    //                PerformAITurn();
+    //                return; 
+    //            }
+    //        }
+    //        else
+    //        {
+    //            Debug.LogWarning("AI nie mogło wykonać ruchu. Zmiana celu.");
+    //            SwitchGoalNode();
+    //            PerformAITurn();  // Próba wykonania ruchu ponownie
+    //            return;
+    //         //   gameController.PlayerWinsDueToNoAiMoves();
+    //         //   Debug.LogWarning("AI nie mogło wykonać ruchu.");
+    //         //   return;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        gameController.PlayerWinsDueToNoAiMoves();
+    //        // Jeśli nie znaleziono żadnych legalnych ruchów
+    //        Debug.LogError("Brak dostępnych legalnych ruchów dla AI. AI czeka na następną turę.");
+    //        return;
+    //    }
+    //    gameController.TurnManager.IsPlayerTurn = false;
+    //    gameController.CheckIfGameEnded(ref bestNode);
+    //}
 
 
     public void SetGoalNodeForAI()
@@ -136,6 +208,22 @@ public class AIController : MonoBehaviour
     {
         goalNode = gameController.BallMovement.GetNodeAtPosition(gameController.GridManager.GoalNodes[1].Position);
         Debug.Log($"AI GoalNode set to: {goalNode.Position}");
+    }
+    private void SwitchGoalNode()
+    {
+        Node previousGoal = goalNode;
+
+        // Zmiana celu na przeciwny (jeśli był goalNodeBottom, zmień na goalNodeTop, i odwrotnie)
+        if (goalNode == gameController.BallMovement.GetNodeAtPosition(gameController.GridManager.GoalNodes[1].Position))
+        {
+            goalNode = gameController.BallMovement.GetNodeAtPosition(gameController.GridManager.GoalNodes[0].Position);
+        }
+        else
+        {
+            goalNode = gameController.BallMovement.GetNodeAtPosition(gameController.GridManager.GoalNodes[1].Position);
+        }
+
+        Debug.Log($"AI GoalNode zmieniono z {previousGoal.Position} na {goalNode.Position}");
     }
 
     public void SetRandomGoalNode()
