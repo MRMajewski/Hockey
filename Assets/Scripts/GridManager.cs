@@ -6,13 +6,13 @@ using System;
 public class Node
 {
     private Vector2 position;
-    private List<Node> neighbors; 
+    private List<Node> neighbors;
     private bool isGoalNode;
 
     public Vector2 Position { get => position; set => position = value; }
     public bool IsOccupied;
-    public List<Node> Neighbors { get => neighbors; set => neighbors = value; }  
-    public bool IsGoalNode { get => isGoalNode; set => isGoalNode=value; }
+    public List<Node> Neighbors { get => neighbors; set => neighbors = value; }
+    public bool IsGoalNode { get => isGoalNode; set => isGoalNode = value; }
 
     public Node(Vector2 position, bool isGoal = false)
     {
@@ -24,7 +24,7 @@ public class Node
 
     public bool IsNeighbor(Node node)
     {
-        return Neighbors.Contains(node); 
+        return Neighbors.Contains(node);
     }
 
     public void AddNeighbor(Node neighbor)
@@ -53,11 +53,22 @@ public class GridManager : MonoBehaviour
 
     public List<Node> Nodes => nodes;
     public List<Node> GoalNodes => goalNodes;
+
+    private float edgeX;
+    private float edgeXMax;
+    private float edgeY;
+    private float edgeYMax;
+
     public void GenerateNodes(int gridWidth, int gridHeight, int goalWidth = 2)
     {
         offset = new Vector2(gridWidth / -2f, gridHeight / -2f);
         nodes.Clear();
         goalNodes.Clear();
+
+        edgeX = offset.x;
+        edgeXMax = gridWidth * nodeSpacing + offset.x;
+        edgeY = offset.y;
+        edgeYMax = gridHeight * nodeSpacing + offset.y;
 
         int totalNodes = (gridWidth + 1) * (gridHeight + 1);
 
@@ -70,6 +81,7 @@ public class GridManager : MonoBehaviour
                 nodes.Add(newNode);
             }
         }
+
         Vector2 topGoalCenter = new Vector2(gridWidth / 2 * nodeSpacing + offset.x, nodeSpacing - offset.y);
         Vector2 bottomGoalCenter = new Vector2(gridWidth / 2 * nodeSpacing + offset.x, -nodeSpacing + offset.y);
 
@@ -99,13 +111,13 @@ public class GridManager : MonoBehaviour
                 Vector2 distance = currentNode.Position - neighborNode.Position;
 
                 if (distance.magnitude <= nodeSpacing * Mathf.Sqrt(2) + 0.1f)
-                {
-                    currentNode.AddNeighbor(neighborNode);
+                {      
+                 currentNode.AddNeighbor(neighborNode);
                 }
             }
         }
 
-        ModifyAdjacencyForEdgeNodes(gridWidth, gridHeight);
+        ModifyAdjacencyForEdgeNodes();
 
         foreach (var goalNode in goalNodes)
         {
@@ -124,6 +136,93 @@ public class GridManager : MonoBehaviour
         DrawConnections();
     }
 
+
+    //private void AssignNeighbors(int gridWidth, int gridHeight)
+    //{
+    //    for (int i = 0; i < nodes.Count; i++)
+    //    {
+    //        Node currentNode = nodes[i];
+
+    //        for (int j = 0; j < nodes.Count; j++)
+    //        {
+    //            if (i == j) continue;
+
+    //            Node neighborNode = nodes[j];
+    //            Vector2 distance = currentNode.Position - neighborNode.Position;
+
+    //            if (distance.magnitude <= nodeSpacing * Mathf.Sqrt(2) + 0.1f)
+    //            {
+    //                if (IsSpecialGoalEntryNode(currentNode))
+    //                {
+    //                    // Dla wêz³a na dole
+    //                    if (currentNode.Position.y == edgeY)
+    //                    {
+    //                        // Dodaj s¹siadów z wyj¹tkiem skosów w dó³
+    //                        if (IsValidStraightNeighbor(currentNode, neighborNode) &&
+    //                            !(neighborNode.Position.x == -1 && neighborNode.Position.y == edgeY + 1) && // Dó³ lewo
+    //                            !(neighborNode.Position.x == 1 && neighborNode.Position.y == edgeY + 1))   // Dó³ prawo
+    //                        {
+    //                            currentNode.AddNeighbor(neighborNode);
+    //                        }
+    //                    }
+    //                    // Dla wêz³a na górze
+    //                    else if (currentNode.Position.y == edgeYMax)
+    //                    {
+    //                        // Dodaj s¹siadów z wyj¹tkiem skosów w górê
+    //                        if (IsValidStraightNeighbor(currentNode, neighborNode) &&
+    //                            !(neighborNode.Position.x == -1 && neighborNode.Position.y == edgeYMax - 1) && // Góra lewo
+    //                            !(neighborNode.Position.x == 1 && neighborNode.Position.y == edgeYMax - 1))   // Góra prawo
+    //                        {
+    //                            currentNode.AddNeighbor(neighborNode);
+    //                        }
+    //                    }
+    //                }
+    //                if (!IsCornerNode(currentNode, gridWidth, gridHeight) && !IsCornerNode(neighborNode, gridWidth, gridHeight))
+    //                {
+    //                    currentNode.AddNeighbor(neighborNode);
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    ModifyAdjacencyForEdgeNodes();
+
+    //    foreach (var goalNode in goalNodes)
+    //    {
+    //        for (int i = 0; i < nodes.Count; i++)
+    //        {
+    //            Node currentNode = nodes[i];
+    //            Vector2 distance = goalNode.Position - currentNode.Position;
+
+    //            if (distance.magnitude <= nodeSpacing * Mathf.Sqrt(2) + 0.1f)
+    //            {
+    //                goalNode.AddNeighbor(nodes[i]);
+    //                currentNode.AddNeighbor(goalNode);
+    //            }
+    //        }
+    //    }
+    //    DrawConnections();
+    //}
+
+    private bool IsCornerNode(Node node, int gridWidth, int gridHeight)
+    {
+        return (node.Position.x == edgeX || node.Position.x == edgeXMax) &&
+               (node.Position.y == edgeY || node.Position.y == edgeYMax);
+    }
+
+    private bool IsSpecialGoalEntryNode(Node node)
+    {
+        return node.Position.x == 0 &&
+               (node.Position.y == edgeY || node.Position.y == edgeYMax);
+    }
+
+    private bool IsValidStraightNeighbor(Node currentNode, Node neighborNode)
+    {
+        Vector2 distance = currentNode.Position - neighborNode.Position;
+
+        return (distance.x == 0 || distance.y == 0);
+    }
+
     private void DrawConnections()
     {
         for (int i = 0; i < nodes.Count; i++)
@@ -137,26 +236,62 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-
-    private void ModifyAdjacencyForEdgeNodes(int gridWidth, int gridHeight)
+    private void ModifyAdjacencyForEdgeNodes()
     {
-        float edgeX = offset.x;
-        float edgeXMax = gridWidth * nodeSpacing + offset.x;
-        float edgeY = offset.y;
-        float edgeYMax = gridHeight * nodeSpacing + offset.y;
-
         for (int i = 0; i < nodes.Count; i++)
         {
             Node currentNode = nodes[i];
 
-            if (Mathf.Approximately(currentNode.Position.x, edgeX) || Mathf.Approximately(currentNode.Position.x, edgeXMax))
+            // Sprawdzamy, czy jest w rogu
+            bool isBottomLeftCorner = currentNode.Position.x == edgeX && currentNode.Position.y == edgeY;
+            bool isBottomRightCorner = currentNode.Position.x == edgeXMax && currentNode.Position.y == edgeY;
+            bool isTopLeftCorner = currentNode.Position.x == edgeX && currentNode.Position.y == edgeYMax;
+            bool isTopRightCorner = currentNode.Position.x == edgeXMax && currentNode.Position.y == edgeYMax;
+
+            if (currentNode.Position.y == edgeY && !isBottomLeftCorner && !isBottomRightCorner)
             {
-                RemoveEdgeNeighbors(currentNode, n => Mathf.Approximately(n.Position.x, currentNode.Position.x));
+                RemoveEdgeNeighbors(currentNode, n =>
+                 (n.Position.x == currentNode.Position.x - 1 && n.Position.y == edgeYMax - 1) || 
+                 (n.Position.x == currentNode.Position.x + 1 && n.Position.y == edgeYMax - 1));  
             }
 
-            if (Mathf.Approximately(currentNode.Position.y, edgeY) || Mathf.Approximately(currentNode.Position.y, edgeYMax))
+            else if (currentNode.Position.y == edgeYMax && !isTopLeftCorner && !isTopRightCorner)
             {
-                RemoveEdgeNeighbors(currentNode, n => Mathf.Approximately(n.Position.y, currentNode.Position.y));
+                RemoveEdgeNeighbors(currentNode, n =>
+                 (n.Position.x == currentNode.Position.x - 1 && n.Position.y == edgeY + 1) || 
+                 (n.Position.x == currentNode.Position.x + 1 && n.Position.y == edgeY + 1));     
+            }
+
+            else if (currentNode.Position.x == edgeX || currentNode.Position.x == edgeXMax)
+            {
+                RemoveEdgeNeighbors(currentNode, n => n.Position.x == currentNode.Position.x);
+            }
+
+            else if (currentNode.Position.y == edgeY || currentNode.Position.y == edgeYMax)
+            {
+                RemoveEdgeNeighbors(currentNode, n => n.Position.y == currentNode.Position.y);
+            }
+
+            // Corners
+            else if (isBottomLeftCorner)
+            {
+                RemoveEdgeNeighbors(currentNode, n => n.Position.x == edgeX && n.Position.y > edgeY);
+                RemoveEdgeNeighbors(currentNode, n => n.Position.x < edgeX && n.Position.y == edgeY);
+            }
+            else if (isBottomRightCorner)
+            {
+                RemoveEdgeNeighbors(currentNode, n => n.Position.x == edgeXMax && n.Position.y > edgeY);
+                RemoveEdgeNeighbors(currentNode, n => n.Position.x > edgeXMax && n.Position.y == edgeY);
+            }
+            else if (isTopLeftCorner)
+            {
+                RemoveEdgeNeighbors(currentNode, n => n.Position.x == edgeX && n.Position.y < edgeYMax);
+                RemoveEdgeNeighbors(currentNode, n => n.Position.x < edgeX && n.Position.y == edgeYMax);
+            }
+            else if (isTopRightCorner)
+            {
+                RemoveEdgeNeighbors(currentNode, n => n.Position.x == edgeXMax && n.Position.y < edgeYMax);
+                RemoveEdgeNeighbors(currentNode, n => n.Position.x > edgeXMax && n.Position.y == edgeYMax);
             }
         }
     }
@@ -176,7 +311,6 @@ public class GridManager : MonoBehaviour
     {
         for (int j = node.Neighbors.Count - 1; j >= 0; j--)
         {
-
             Node neighborNode = node.Neighbors[j];
 
             if (condition(neighborNode))
