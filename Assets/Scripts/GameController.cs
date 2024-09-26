@@ -3,6 +3,7 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using static AIController;
+using System.Linq;
 
 public class GameController : MonoBehaviour
 {
@@ -104,7 +105,7 @@ public class GameController : MonoBehaviour
         if (gameEnded)
             return true;
 
-        if (CheckForWin(ref nodeUnderChecking))
+        if (CheckForWin( nodeUnderChecking))
         {
             string displayText;
             if (turnManager.IsPlayerTurn)
@@ -129,9 +130,18 @@ public class GameController : MonoBehaviour
         }
         return false;
     }
-    private bool CheckForWin(ref Node nodeUnderChecking)
+    //private bool CheckForWin(ref Node nodeUnderChecking)
+    //{
+    //    if (gridManager.GoalNodes.Any(goalNode => goalNode.Position == nodeUnderChecking.Position))
+
+    //        return true;
+    //    else
+    //        return false;
+    //}
+
+    private bool CheckForWin( Node nodeUnderChecking)
     {
-        if ((nodeUnderChecking.Position == gridManager.GoalNodes[0].Position || nodeUnderChecking.Position == gridManager.GoalNodes[1].Position))
+        if (gridManager.GoalNodes.Any(goalNode => goalNode.Position == nodeUnderChecking.Position))
 
             return true;
         else

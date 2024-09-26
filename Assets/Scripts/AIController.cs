@@ -114,6 +114,7 @@ public class AIController : MonoBehaviour
                 return;
             }
         }
+        currentNode = gameController.BallMovement.GetConfirmedNode();
         gameController.TurnManager.IsPlayerTurn = false;
         gameController.CheckIfGameEnded(ref currentNode);
     }
