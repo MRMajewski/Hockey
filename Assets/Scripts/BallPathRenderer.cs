@@ -21,26 +21,20 @@ public class BallPathRenderer : MonoBehaviour
     {
         if (!startNode.IsNeighbor(endNode))
         {
-            // Przesuñ pi³kê na wybrany wêze³
             return false;
         }
         if (startNode.Position.Equals(endNode.Position))
         {
-            //   Debug.Log("Ruch niedozwolony:Nie wykonano ruchu");
             return false;
         }
 
-        // 2. SprawdŸ, czy istnieje ju¿ taka sama œcie¿ka w drawnPaths
         if (drawnPaths.Contains((startNode, endNode)) || drawnPaths.Contains((endNode, startNode)))
         {
-            //   Debug.Log("Ruch niedozwolony: Istnieje ju¿ po³¹czenie miêdzy startNode a endNode.");
             return false;
         }
 
-        // 3. SprawdŸ, czy skosowy ruch przecina istniej¹ce œcie¿ki w drawnPaths
         if (DoesDiagonalMoveIntersect(startNode, endNode))
         {
-            //    Debug.Log("Ruch niedozwolony: Skosowy ruch przecina istniej¹c¹ œcie¿kê.");
             return false;
         }
 
@@ -55,15 +49,14 @@ public class BallPathRenderer : MonoBehaviour
 
             if (path.Item1 == targetNode || path.Item2 == targetNode)
             {
-                return true; // Node zosta³ ju¿ u¿yty w jednej ze œcie¿ek
+                return true; 
             }
         }
-        return false; // Node nie zosta³ jeszcze u¿yty
+        return false;
     }
 
     private bool DoesDiagonalMoveIntersect(Node startNode, Node endNode)
     {
-        // Jeœli ruch nie jest skosowy, nie ma potrzeby sprawdzaæ przeciêcia
         if (startNode.Position.x == endNode.Position.x || startNode.Position.y == endNode.Position.y)
         {
             return false;
@@ -77,16 +70,14 @@ public class BallPathRenderer : MonoBehaviour
             Vector2 pathStart = path.Item1.Position;
             Vector2 pathEnd = path.Item2.Position;
 
-            // Jeœli œcie¿ka jest bezpoœrednim po³¹czeniem, pomijamy
             if ((startPos == pathStart && endPos == pathEnd) || (startPos == pathEnd && endPos == pathStart))
             {
                 continue;
             }
 
-            // SprawdŸ przeciêcie œcie¿ki z istniej¹cymi œcie¿kami
             if (LineIntersects(startPos, endPos, pathStart, pathEnd))
             {
-                return true; // Skosowy ruch przecina istniej¹c¹ œcie¿kê
+                return true; 
             }
         }
 
@@ -94,7 +85,6 @@ public class BallPathRenderer : MonoBehaviour
     }
     private bool LineIntersects(Vector2 start1, Vector2 end1, Vector2 start2, Vector2 end2)
     {
-        // SprawdŸ, czy odcinki s¹ równoleg³e
         float a1 = end1.y - start1.y;
         float b1 = start1.x - end1.x;
         float c1 = a1 * start1.x + b1 * start1.y;
@@ -107,16 +97,13 @@ public class BallPathRenderer : MonoBehaviour
 
         if (determinant == 0)
         {
-            // Linie s¹ równoleg³e i nie przecinaj¹ siê
             return false;
         }
 
-        // Oblicz punkt przeciêcia
         float x = (b2 * c1 - b1 * c2) / determinant;
         float y = (a1 * c2 - a2 * c1) / determinant;
         Vector2 intersectionPoint = new Vector2(x, y);
 
-        // SprawdŸ, czy punkt przeciêcia le¿y w obrêbie obu odcinków, z wyj¹tkiem koñców
         bool isOnSegment1 = IsPointOnSegment(intersectionPoint, start1, end1, true);
         bool isOnSegment2 = IsPointOnSegment(intersectionPoint, start2, end2, true);
 
@@ -125,7 +112,6 @@ public class BallPathRenderer : MonoBehaviour
 
     private bool IsPointOnSegment(Vector2 point, Vector2 segmentStart, Vector2 segmentEnd, bool excludeEndpoints = false)
     {
-        // SprawdŸ, czy punkt jest wzd³u¿ odcinka
         float minX = Mathf.Min(segmentStart.x, segmentEnd.x);
         float maxX = Mathf.Max(segmentStart.x, segmentEnd.x);
         float minY = Mathf.Min(segmentStart.y, segmentEnd.y);
@@ -136,7 +122,6 @@ public class BallPathRenderer : MonoBehaviour
 
         if (excludeEndpoints)
         {
-            // Jeœli koñce maj¹ byæ wykluczone, musimy upewniæ siê, ¿e punkt nie jest koñcem segmentu
             return isOnSegment && (point != segmentStart && point != segmentEnd);
         }
         return isOnSegment;
@@ -164,7 +149,7 @@ public class BallPathRenderer : MonoBehaviour
         }
 
         drawnPaths.Add((fromNode, toNode));
-        drawnPaths.Add((toNode, fromNode)); // Dodajemy równie¿ w odwrotnej kolejnoœci
+        drawnPaths.Add((toNode, fromNode));
     }
 
     public void ClearPaths()
@@ -181,6 +166,6 @@ public class BallPathRenderer : MonoBehaviour
     public void MarkConnectionAsUsed(Node nodeA, Node nodeB)
     {
         drawnPaths.Add((nodeA, nodeB));
-        drawnPaths.Add((nodeB, nodeA)); // Dodajemy równie¿ w odwrotnej kolejnoœci
+        drawnPaths.Add((nodeB, nodeA)); 
     }
 }

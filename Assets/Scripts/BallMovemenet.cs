@@ -107,8 +107,6 @@ public class BallMovement : MonoBehaviour
         currentTemporaryNode = targetNode;
         SetConfirmedNode(ref targetNode);
     }
-
-
     private void UpdateCursorPosition()
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -116,7 +114,6 @@ public class BallMovement : MonoBehaviour
         cursor.position = new Vector3(gridPosition.x, gridPosition.y, cursor.position.z);
 
         Node nodeUnderCursor = gameController.GridManager.GetNodeAtPosition(gridPosition);
-
 
         if (confirmedNode.IsNeighbor(nodeUnderCursor))
         {
@@ -191,7 +188,6 @@ public class BallMovement : MonoBehaviour
                 closestNode = node;
             }
         }
-
         return closestNode != null ? closestNode.Position : position;
     }
 

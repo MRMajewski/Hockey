@@ -14,7 +14,6 @@ public class GridSizeSliders : MonoBehaviour
     [SerializeField] private TextMeshProUGUI widthValueDisplayText;
     [SerializeField] private TextMeshProUGUI heightValueDisplayText;
 
-
     public void OnWidthSliderValueChanged(float value)
     {
         int evenValue = Mathf.RoundToInt(value / 2) * 2;

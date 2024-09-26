@@ -168,15 +168,14 @@ public class GameController : MonoBehaviour
         scoreManager.PlayerWinsUpdateScore();
         uiManager.DisplayMessage("Player wins! AI has no more moves!");
 
-        Debug.Log("Player wins! AI has no more moves!");
 
         gameEnded = true;
-        isGameStarted = false; // Koñczymy grê
+        isGameStarted = false; 
     }
     public void AiWinsDueToNoPlayerMoves()
     {
         if (gameEnded)
-            return; // Zapobiega podwójnemu zakoñczeniu gry
+            return; 
 
         scoreManager.AIWinsUpdateScore();
         uiManager.DisplayMessage("AI wins! Player has no more moves!");
@@ -184,7 +183,7 @@ public class GameController : MonoBehaviour
         Debug.Log("AI wins! Player has no more moves!");
 
         gameEnded = true;
-        isGameStarted = false; // Koñczymy grê
+        isGameStarted = false; 
     }
     #endregion
 }

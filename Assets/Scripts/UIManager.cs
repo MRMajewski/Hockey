@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static AIController;
 
 public class UIManager : MonoBehaviour
 {
@@ -42,7 +41,6 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateScoreUI()
     {
-
         int PlayerScore = gameController.ScoreManager.PlayerScore;
         int AIScore = gameController.ScoreManager.AIScore;
 

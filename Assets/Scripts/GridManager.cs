@@ -176,8 +176,7 @@ public class GridManager : MonoBehaviour
     {
         for (int j = node.Neighbors.Count - 1; j >= 0; j--)
         {
-            //  int neighborIndex = node.Neighbors[j];
-            //    Node neighborNode = nodes[neighborIndex];
+
             Node neighborNode = node.Neighbors[j];
 
             if (condition(neighborNode))
@@ -204,6 +203,4 @@ public class GridManager : MonoBehaviour
 
         return closestNode != null ? closestNode.Position : position;
     }
-
-   
 }

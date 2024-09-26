@@ -39,38 +39,31 @@ public class TurnManager : MonoBehaviour
             if (currentNode == null || targetNode == null)
                 return;
 
-            // Sprawdzanie, czy ruch jest legalny
             if (gameController.PathRenderer.IsMoveLegal(currentNode, targetNode))
             {
-                // Wykonaj ruch
                 gameController.BallMovement.MoveBallToNode(targetNode);
                 gameController.PathRenderer.AddPosition(ref currentNode, ref targetNode, playerColor);
                 lastConfirmedNode = targetNode;
 
-                Debug.Log("Koniec ruchu gracza!");
 
-                // Aktualizacja ostatniego potwierdzonego wêz³a
                 gameController.BallMovement.SetConfirmedNode(ref lastConfirmedNode);
 
-                // SprawdŸ, czy gra zakoñczy³a siê
                if(gameController.CheckIfGameEnded(ref lastConfirmedNode))
                 {
                     return;
                 }          
 
-                // SprawdŸ, czy gracz koñczy ruch na u¿ywanym wêŸle
                 if (gameController.PathRenderer.WasNodeAlreadyUsed(targetNode))
                 {
                     gameController.UIManager.DisplayMessageBonusMove("BONUS MOVE");
                     Debug.Log("Gracz koñczy ruch na u¿ywanym wêŸle - dodatkowy ruch!");
-                    // Tutaj gracz mo¿e wykonaæ kolejny ruch
-                    return;  // Wyjœcie, aby gracz móg³ wykonaæ kolejny ruch
+
+                    return; 
                 }
                 else
                 {
                     gameController.UIManager.ResetBonusMoveMessage();
                     gameController.UIManager.ResetMessage();
-                    // Tura gracza siê koñczy
                     IsPlayerTurn = false;
                     HandleAITurn();
                 }
@@ -79,7 +72,6 @@ public class TurnManager : MonoBehaviour
             {
                 gameController.UIManager.ResetBonusMoveMessage();
                 gameController.UIManager.ResetMessage();
-                // Ruch nielegalny, reset do ostatniego potwierdzonego wêz³a
                 gameController.BallMovement.ResetToLastConfirmedNode();
             }
         }
@@ -90,8 +82,6 @@ public class TurnManager : MonoBehaviour
         if (gameController.AIController != null)
         {
             gameController.AIController.PerformAITurn();
-
-            Debug.Log("Koniec tury AI!");
 
         }
         IsPlayerTurn = true;
